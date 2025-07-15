@@ -1,5 +1,18 @@
+CREATE TABLE USERS(
+	num NUMBER PRIMARY KEY, -- 회원의 고유번호
+	userName VARCHAR2(20) UNIQUE, -- 아이디
+	password VARCHAR2(100) NOT NULL,-- 패스워드
+	email VARCHAR2(50) UNIQUE, -- 이메일
+	profileImage VARCHAR2(100), -- 프로필 이미지 정보 (처음 가입시에는 null)
+	role VARCHAR2(10) DEFAULT 'ROLE_USER', -- 역할 ROLE_USER(일반사용자) | ROLE_STAFF(직원) | ROLE_ADMIN(최고권한자)
+	updatedAt DATE, -- 수정 날짜
+	createdAt DATE -- 가입 날짜
+);
+
+CREATE SEQUENCE users_seq;
+
 CREATE TABLE MEMBER(
-	NUM NUMBER PRIMARY KEY.
+	NUM NUMBER PRIMARY KEY,
 	NAME VARCHAR2(20),
 	ADDR VARCHAR2(50)
 );
