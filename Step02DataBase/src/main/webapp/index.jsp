@@ -18,7 +18,7 @@
 	</jsp:include>
 	<div class="container">
 		<%if(userName !=null){ %>
-			<strong><%=userName %></strong> 님 로그인 중
+			<a href="${pageContext.request.contextPath }/user/info.jsp"><%=userName %></a> 님 로그인 중
 		<%} %>
 	
 		<h1>인덱스 페이지 입니다</h1>

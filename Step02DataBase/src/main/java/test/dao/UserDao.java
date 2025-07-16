@@ -8,8 +8,51 @@ import test.dto.UserDto;
 import test.util.DbcpBean;
 
 public class UserDao {
-	// userName 을 이용해서 회원 한 명의 정보를 리턴하는 메소드
 	/* ************************************************** */
+	/* ************************************************** */
+	public boolean updatePassword(UserDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					UPDATE USERS
+					SET PASSWORD=?, updatedAt=SYSDATE
+					WHERE userName=?
+					""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 순서대로 필요한 값 바인딩 
+			// 예시 pstmt.setString(1, dto.getName());
+			pstmt.setString(1, dto.getPassword());
+			pstmt.setString(2, dto.getUserName());
+
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					;
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (rowCount > 0) {
+			return true; //
+		} else {
+			return false;
+		}
+	}
+
+	
+	/* ************************************************** */
+	// userName 을 이용해서 회원 한 명의 정보를 리턴하는 메소드
+	
 	public UserDto getByUserName(String userName) {
 		UserDto dto = null;
 		Connection conn = null;

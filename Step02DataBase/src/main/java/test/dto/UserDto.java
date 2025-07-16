@@ -48,7 +48,7 @@ public class UserDto {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public String getUpdateddAt() {
+	public String getUpdatedAt() {
 		return updatedAt;
 	}
 	public void setUpdatedAt(String updatedAt) {
