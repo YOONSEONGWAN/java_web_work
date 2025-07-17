@@ -7,7 +7,7 @@
 	// 세션에 저장된 userName 을 읽어온다 (이미 로그인 된 상태)
 	String userName=(String)session.getAttribute("userName");
 	// DB 에서 사용자 정보를 읽어온다.
-	UserDto dto=new UserDao().getByUserName(userName);
+	UserDto dto=UserDao.getInstance().getByUserName(userName);
 %>
 <!DOCTYPE html>
 <html>
@@ -37,7 +37,13 @@
 			<tr>
 				<th>프로필 이미지</th>
 				<td>
-					<i style="font-size:50px;" " class="bi bi-person-circle"></i>
+					<%if(dto.getProfileImage()==null){ %>
+						<i style="font-size:100px;" " class="bi bi-person-circle"></i>
+					<%}else{ %>
+						<img src="${pageContext.request.contextPath }/upload/<%=dto.getProfileImage() %>"
+							style="width:100px; height:100px; border-radius:50%;"  />
+					<%} %>
+					
 				</td>
 			</tr>
 			<tr>

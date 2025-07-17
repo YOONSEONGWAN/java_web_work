@@ -8,7 +8,105 @@ import test.dto.UserDto;
 import test.util.DbcpBean;
 
 public class UserDao {
+	public static UserDao dao;
+	
+	// static 초기화 블럭 (이 클래스가 최초 사용될 때 한 번만 실행되는 블럭
+	static{
+		// static 초기화 작업을 여기서 한다(UserDao) 객체를 생성해서 static 필드에 다
+		dao=new UserDao();
+	}
+	
+	// 외부에서 UserDao 객체를 생성하지 못하도록 생성자를 private 로 막는다.
+	private UserDao(){}
+	
+	// UserDao 객체의 참조값을 리턴해주는 public static 메소드 제공
+	public static UserDao getInstance() {
+		return dao;
+	}
+	
 	/* ************************************************** */
+	/* ************************************************** */
+	// 이메일과 프로필을 수정하는 메소드
+	public boolean updateEmailProfile(UserDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					UPDATE users
+					SET email=?, profileImage=?, updatedAt=SYSDATE
+					WHERE userName =?
+			""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 순서대로 필요한 값 바인딩 
+			// 예시 pstmt.setString(1, dto.getName());
+			pstmt.setString(1, dto.getEmail());
+			pstmt.setString(2, dto.getProfileImage());
+			pstmt.setString(3, dto.getUserName());
+
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					;
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (rowCount > 0) {
+			return true; //
+		} else {
+			return false;
+		}
+	}
+
+	/* ************************************************** */
+	// 이메일을 수정하는 메소드
+	public boolean updateEmail(UserDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					UPDATE users
+					SET EMAIL = ? 
+					WHERE USERNAME = ?
+			""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 순서대로 필요한 값 바인딩 
+			pstmt.setString(1, dto.getEmail());
+			pstmt.setString(2, dto.getUserName());
+
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					;
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (rowCount > 0) {
+			return true; //
+		} else {
+			return false;
+		}
+	}
+	
 	/* ************************************************** */
 	public boolean updatePassword(UserDto dto) {
 		Connection conn = null;
