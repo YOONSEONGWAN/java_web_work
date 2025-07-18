@@ -8,7 +8,7 @@ import test.dto.UserDto;
 import test.util.DbcpBean;
 
 public class UserDao {
-	public static UserDao dao;
+	private static UserDao dao;
 	
 	// static 초기화 블럭 (이 클래스가 최초 사용될 때 한 번만 실행되는 블럭
 	static{

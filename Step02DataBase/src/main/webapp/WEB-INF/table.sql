@@ -1,3 +1,15 @@
+CREATE TABLE board(
+	num NUMBER PRIMARY KEY,
+	writer VARCHAR2(25) NOT NULL,
+	title VARCHAR2(100) NOT NULL,
+	content CLOB,
+	viewCount NUMBER DEFAULT 0,
+	createdAt DATE DEFAULT SYSDATE
+);
+
+CREATE SEQUENCE board_seq;
+
+
 CREATE TABLE USERS(
 	num NUMBER PRIMARY KEY, -- 회원의 고유번호
 	userName VARCHAR2(20) UNIQUE, -- 아이디

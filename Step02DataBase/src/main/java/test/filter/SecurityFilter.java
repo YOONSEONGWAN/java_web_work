@@ -29,7 +29,7 @@ public class SecurityFilter implements Filter{
 		"/user/loginform.jsp","/user/login.jsp",
 		"/user/signup-form.jsp", "/user/signup.jsp",
 		"/images/",
-		"/upload/"
+		"/upload/", "/board/list.jsp", "/board/view.jsp"
 	);
 	
 

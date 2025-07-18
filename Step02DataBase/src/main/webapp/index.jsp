@@ -14,6 +14,9 @@
 	</jsp:include>
 	<div class="container">
 		<h1>인덱스 페이지 입니다</h1>
+		<ul>
+			<li><a href="${pageContext.request.contextPath }/board/list.jsp">게시글 목록</a></li>
+		</ul>
 		<div id="carouselExampleIndicators" class="carousel slide">
 		  <div class="carousel-indicators">
 		    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
