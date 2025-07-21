@@ -31,8 +31,148 @@ public class BoardDao {
 	public static BoardDao getInstance() {
 		return dao;
 	}
+	
+
+	/* ************************************************** */
+	// 조회수를 증가시키는 메소드
+	public boolean addViewCount(int num) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+				UPDATE board
+				SET viewCount = viewCount+1
+				WHERE num=?
+			""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 순서대로 필요한 값 바인딩 
+			// 예시 pstmt.setString(1, dto.getName());
+			pstmt.setInt(1, num);
+
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					;
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (rowCount > 0) {
+			return true; //
+		} else {
+			return false;
+		}
+	}
+
+	
+	/* ************************************************** */
+	// 전체 글의 갯수를 리턴하는 메소드
+	public int getCount(){
+	int count=0;
+	
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	try {
+		conn = new DbcpBean().getConn();
+		String sql = """
+			SELECT MAX(ROWNUM) AS count
+			FROM board
+		""";
+		pstmt = conn.prepareStatement(sql);
+		
+		rs = pstmt.executeQuery();
+		
+		if(rs.next()) {
+			count=rs.getInt("count");
+		}
+	}catch(Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			if (rs != null)
+				rs.close();
+			if (pstmt != null);
+			pstmt.close();
+			if(conn!=null);
+			conn.close();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	return count;
+}
+
+		
 	/* ************************************************** */
 	
+	// 특정 page 에 해당하는 row 만 select 해서 리턴하는 메소드
+	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
+	public List<BoardDto> selectPage(BoardDto dto2){
+		
+		List<BoardDto> list=new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+				SELECT *
+				FROM
+					(SELECT result1.*, ROWNUM AS rnum
+					FROM
+						(SELECT num, writer, title, content, viewCount, createdAt
+						FROM board
+						ORDER BY num DESC) result1)
+				WHERE rnum BETWEEN ? AND ?
+			""";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, dto2.getStartRowNum());
+			pstmt.setInt(2, dto2.getEndRowNum());
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				dto2=new BoardDto();
+				dto2.setNum(rs.getInt("NUM"));
+				dto2.setWriter(rs.getString("writer"));
+				dto2.setTitle(rs.getString("title"));
+				dto2.setViewCount(rs.getInt("viewCount"));
+				dto2.setCreatedAt(rs.getString("createdAt"));
+				list.add(dto2);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null);
+				pstmt.close();
+				if(conn!=null);
+				conn.close();
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
+	/* ************************************************** */
+
 	public boolean update(BoardDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -171,9 +311,12 @@ public class BoardDao {
 			conn = new DbcpBean().getConn();
 			// 실행 할 sql 
 			String sql = """
-					SELECT writer, title, content, viewCount, createdAt
-					FROM board
-					WHERE NUM = ?
+					SELECT writer, title, content, viewCount, 
+						TO_CHAR(b.createdAt, 'YY"년"MM"월"DD"일" HH24:MI') AS createdAt, 
+						profileImage
+					FROM board b
+					INNER JOIN users u ON b.writer = u.userName
+					WHERE b.NUM = ?
 					""";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, num);
@@ -186,6 +329,7 @@ public class BoardDao {
 				dto.setContent(rs.getString("content"));
 				dto.setViewCount(rs.getInt("viewCount"));
 				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setProfileImage(rs.getString("profileImage"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
