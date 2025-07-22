@@ -38,6 +38,16 @@
 		  </ol>
 		</nav>
 		<h1>게시글 상세보기</h1>
+		<div class="btn group mb-2">
+			<a class="btn btn-outline-secondary btn-sm <%=dto.getPrevNum()==0 ? "disabled":"" %>" href="view.jsp?num=<%=dto.getPrevNum() %>">
+				<i class="bi bi-arrow-left"></i>
+				Prev
+			</a>
+			<a class="btn btn-outline-secondary btn-sm <%=dto.getNextNum()==0 ? "disabled":"" %>" href="view.jsp?num=<%=dto.getNextNum() %>">
+				Next
+				<i class="bi bi-arrow-right"></i>
+			</a>
+		</div>
 		<table class="table table-striped">
 			<colgroup>
 				<col class="col-2" />
