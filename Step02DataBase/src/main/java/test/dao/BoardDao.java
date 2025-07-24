@@ -33,6 +33,111 @@ public class BoardDao {
 	}
 
 	/* ************************************************** */
+	
+	/* ************************************************** */
+	
+	// 특정 page 에 해당하는 row 만 select 해서 리턴하는 메소드
+	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
+	public List<BoardDto> selectPageByKeyword(BoardDto dto){
+		
+		List<BoardDto> list=new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+				SELECT *
+				FROM
+					(SELECT result1.*, ROWNUM AS rnum
+					FROM
+						(SELECT num, writer, title, content, viewCount, createdAt
+						FROM board
+						WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
+						ORDER BY num DESC) result1)
+				WHERE rnum BETWEEN ? AND ?
+			""";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dto.getKeyword());
+			pstmt.setString(2, dto.getKeyword());
+			pstmt.setInt(3, dto.getStartRowNum());
+			pstmt.setInt(4, dto.getEndRowNum());
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				dto=new BoardDto();
+				dto.setNum(rs.getInt("NUM"));
+				dto.setWriter(rs.getString("writer"));
+				dto.setTitle(rs.getString("title"));
+				dto.setViewCount(rs.getInt("viewCount"));
+				dto.setCreatedAt(rs.getString("createdAt"));
+				list.add(dto);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null);
+				pstmt.close();
+				if(conn!=null);
+				conn.close();
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+	
+	/* ************************************************** */
+	// 검색 키워드에 부합하는 글의 갯수를 리턴하는 메소드 
+	public int getCountByKeyword(String keyword){
+		int count=0;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+				SELECT MAX(ROWNUM) AS count
+				FROM board
+				WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
+			""";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, keyword);
+			pstmt.setString(2, keyword);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				count=rs.getInt("count");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null);
+				pstmt.close();
+				if(conn!=null);
+				conn.close();
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
+	}
+	
+	
+	/* ************************************************** */
 	// 조회수를 증가시키는 메소드
 	public boolean addViewCount(int num) {
 		Connection conn = null;
@@ -76,48 +181,48 @@ public class BoardDao {
 	/* ************************************************** */
 	// 전체 글의 갯수를 리턴하는 메소드
 	public int getCount(){
-	int count=0;
-	
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	try {
-		conn = new DbcpBean().getConn();
-		String sql = """
-			SELECT MAX(ROWNUM) AS count
-			FROM board
-		""";
-		pstmt = conn.prepareStatement(sql);
+		int count=0;
 		
-		rs = pstmt.executeQuery();
-		
-		if(rs.next()) {
-			count=rs.getInt("count");
-		}
-	}catch(Exception e) {
-		e.printStackTrace();
-	}finally {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
-			if (rs != null)
-				rs.close();
-			if (pstmt != null);
-			pstmt.close();
-			if(conn!=null);
-			conn.close();
+			conn = new DbcpBean().getConn();
+			String sql = """
+				SELECT MAX(ROWNUM) AS count
+				FROM board
+			""";
+			pstmt = conn.prepareStatement(sql);
 			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				count=rs.getInt("count");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null);
+				pstmt.close();
+				if(conn!=null);
+				conn.close();
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
+		return count;
 	}
-	return count;
-}
 
 		
 	/* ************************************************** */
 	
 	// 특정 page 에 해당하는 row 만 select 해서 리턴하는 메소드
 	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
-	public List<BoardDto> selectPage(BoardDto dto2){
+	public List<BoardDto> selectPage(BoardDto dto){
 		
 		List<BoardDto> list=new ArrayList<>();
 		
@@ -138,19 +243,19 @@ public class BoardDao {
 			""";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setInt(1, dto2.getStartRowNum());
-			pstmt.setInt(2, dto2.getEndRowNum());
+			pstmt.setInt(1, dto.getStartRowNum());
+			pstmt.setInt(2, dto.getEndRowNum());
 			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				dto2=new BoardDto();
-				dto2.setNum(rs.getInt("NUM"));
-				dto2.setWriter(rs.getString("writer"));
-				dto2.setTitle(rs.getString("title"));
-				dto2.setViewCount(rs.getInt("viewCount"));
-				dto2.setCreatedAt(rs.getString("createdAt"));
-				list.add(dto2);
+				dto=new BoardDto();
+				dto.setNum(rs.getInt("NUM"));
+				dto.setWriter(rs.getString("writer"));
+				dto.setTitle(rs.getString("title"));
+				dto.setViewCount(rs.getInt("viewCount"));
+				dto.setCreatedAt(rs.getString("createdAt"));
+				list.add(dto);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -250,7 +355,7 @@ public class BoardDao {
 		}
 	}
 
-/* ************************************************** */
+	/* ************************************************** */
 
 	public List<BoardDto> selectAll(){
 		
@@ -355,82 +460,82 @@ public class BoardDao {
 
 	/* ************************************************** */
 
-		/* ************************************************** */
-		// 글 번호를 미리 select 해서 리턴해주는 메소드
-		public int getSequence() {
-			// 글 번호를 저장할 지역변수 미리 만들기
-			int num=0;
-			
-			Connection conn = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
+	/* ************************************************** */
+	// 글 번호를 미리 select 해서 리턴해주는 메소드
+	public int getSequence() {
+		// 글 번호를 저장할 지역변수 미리 만들기
+		int num=0;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					SELECT board_seq.NEXTVAL AS num FROM DUAL
+						""";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				num=rs.getInt("num");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
 			try {
-				conn = new DbcpBean().getConn();
-				String sql = """
-						SELECT board_seq.NEXTVAL AS num FROM DUAL
-							""";
-				pstmt = conn.prepareStatement(sql);
-				rs = pstmt.executeQuery();
-				if(rs.next()) {
-					num=rs.getInt("num");
-				}
+				if (rs != null)
+					rs.close();
+				if (pstmt != null);
+				pstmt.close();
+				if(conn!=null);
+				conn.close();
+				
 			}catch(Exception e) {
 				e.printStackTrace();
-			}finally {
-				try {
-					if (rs != null)
-						rs.close();
-					if (pstmt != null);
-					pstmt.close();
-					if(conn!=null);
-					conn.close();
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return num;
-}
-		/* ************************************************** */
-		public boolean insert(BoardDto dto) {
-			Connection conn = null;
-			PreparedStatement pstmt = null;
-			int rowCount = 0;
-			try {
-				conn = new DbcpBean().getConn();
-				String sql = """
-						INSERT INTO board
-						(num, writer, title, content)
-						VALUES(?, ?, ?, ?)
-						""";
-				pstmt = conn.prepareStatement(sql);
-				// ? 에 들어갈 바인딩
-				// 예시: pstmt.setString(1, dto.getName());
-				pstmt.setInt(1, dto.getNum());
-				pstmt.setString(2, dto.getWriter());
-				pstmt.setString(3, dto.getTitle());
-				pstmt.setString(4, dto.getContent());
-				// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
-				rowCount = pstmt.executeUpdate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (pstmt != null)
-						pstmt.close();
-					if (conn != null)
-						;
-					conn.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-			if (rowCount > 0) {
-				return true; //
-			} else {
-				return false;
 			}
 		}
+		return num;
+	}
+	/* ************************************************** */
+	public boolean insert(BoardDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					INSERT INTO board
+					(num, writer, title, content)
+					VALUES(?, ?, ?, ?)
+					""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 들어갈 바인딩
+			// 예시: pstmt.setString(1, dto.getName());
+			pstmt.setInt(1, dto.getNum());
+			pstmt.setString(2, dto.getWriter());
+			pstmt.setString(3, dto.getTitle());
+			pstmt.setString(4, dto.getContent());
+			// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					;
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (rowCount > 0) {
+			return true; //
+		} else {
+			return false;
+		}
+	}
 		
 }

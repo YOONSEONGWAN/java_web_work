@@ -25,10 +25,19 @@
     <!-- Uncomment this to enable session persistence across Tomcat restarts -->
     <!--
     <Manager pathname="SESSIONS.ser" />
-    -->
+    --><!-- 강사님 DB에 붙고 싶으면 아이피를 192.168.0.107로 붙으면 된다.(포트open을 가정)  -->
     <Resource name="jdbc/myoracle" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@127.0.0.1:1521:xe"
               username="scott" password="TIGER" maxTotal="20" maxIdle="10"
               maxWaitMillis="-1"/>
+     
+       <!--  프로젝트에서 사용할 DB컨넥션 태그   
+     <Resource name="jdbc/태그이름적기" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@192.168.0.127:1521:xe"
+              username="계정이름" password="비밀번호" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/> 
+              
+        -->   
 </Context>
