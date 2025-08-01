@@ -45,7 +45,7 @@
 			<a href="${pageContext.request.contextPath }/member/insertform.jsp" class="btn btn-primary">회원 추가</a>
 		</div>	
 			<table class="table table-striped table-hover table-bordered text-center">
-			  <thead calss="table-dark">
+			  <thead class="table-dark">
 			    <tr>
 			      <th>번호</th>
 			      <th>이름</th>

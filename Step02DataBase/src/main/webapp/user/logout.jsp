@@ -4,8 +4,9 @@
 <%
 	// 세션에 저장된 값을 삭제하면 로그아웃
 	// "userName" 이라는 키값으로 저장된 값을 삭제
-	session.removeAttribute("userName");
-
+	//session.removeAttribute("userName");
+	
+	session.invalidate();
 	// 응답하기 
 
 %>

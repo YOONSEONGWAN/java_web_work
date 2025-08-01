@@ -140,7 +140,7 @@
 		
 		<ul class="pagination">
 			<%if(startPageNum!=1){ %>
-				<li calss="page-item">
+				<li class="page-item">
 					<a class=page-link href="list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword %>">&lsaquo;</a>
 				</li>
 			<%}else{ %>
@@ -148,12 +148,12 @@
 			<%} %>
 			
 			<% for(int i=startPageNum; i<=endPageNum; i++){%>
-				<li calss="page-item">
+				<li class="page-item">
 					<a class="page-link <%=i==pageNum ? "active" : "" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>"><%=i %></a>
 				</li>
 			<%} %>
 			<%if(endPageNum < totalPageCount){ %>
-				<li calss="page-item">
+				<li class="page-item">
 					<a class=page-link href="list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword %>">&rsaquo;</a>
 				</li>
 			<%}else{ %>

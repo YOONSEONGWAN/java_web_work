@@ -22,7 +22,7 @@ import test.dto.UserDto;
  * 	enctype="multipart/form-data" 형식의 폼이 전송되었을 때 처리할 서블릿 만들기
  * 	
  */
-@WebServlet("/user/update")
+@WebServlet("/user/update") // 필터링을 할 거면 앞에 경로를 붙여주면 된다.
 @MultipartConfig(
 	fileSizeThreshold = 1024*1024*10, // 업로드 처리하기 위한 메모리 사이즈(10MB)
 	maxFileSize = 1024*1024*50, // 업로드 되는 최대 파일 사이즈 (50MB)
@@ -91,11 +91,11 @@ public class UserUpdateServlet extends HttpServlet {
 			dto.setEmail(email);
 			// dao 의 eamil 만 수정하는 메소드를 이용해서 수정 반영
 			UserDao.getInstance().updateEmail(dto);
-		}
+		} // end if
 		
 		// 리다일렉트 응답 doPost 메소드 안에 작성
 		String cPath=req.getContextPath();
 		resp.sendRedirect(cPath+"/user/info.jsp");
 		
-	}
-}
+	}// end method
+}// end class

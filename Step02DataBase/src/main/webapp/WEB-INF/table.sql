@@ -1,3 +1,22 @@
+CREATE TABLE gallery (
+	num NUMBER PRIMARY KEY,
+	title VARCHAR2(100) NOT NULL,
+	writer VARCHAR2(20) NOT NULL,
+	content CLOB,
+	createdAt DATE DEFAULT SYSDATE
+);
+
+-- gallery 테이블은 board_seq를 공유
+
+CREATE TABLE gallery_image(
+	num NUMBER PRIMARY KEY,
+	gallery_num NUMBER REFERENCES gallery(num),
+	saveFileName VARCHAR2(100) NOT NULL,
+	createdAt DATE DEFAULT SYSDATE
+);
+
+CREATE SEQUENCE gallery_image_seq;
+
 CREATE TABLE comments(
 	num	NUMBER PRIMARY KEY, -- 댓글의 글번호
 	writer VARCHAR2(20) NOT NULL, -- 작성자

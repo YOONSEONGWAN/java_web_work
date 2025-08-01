@@ -35,6 +35,8 @@
 	if(isValid){
 		// HttpSesion 객체에 "userName" 이라는 키값으로 userName 을 저장한다.
 		session.setAttribute("userName", userName); // 유저네임, 키값
+		// role 도 세션에 담는다.
+		session.setAttribute("role", dto.getRole());
 		// session 유지시간 설정(초단위) 
 		session.setMaxInactiveInterval(60*60); // drfault는 30분 (서버에 요청 기준)
 	}
