@@ -15,9 +15,19 @@
 	// 로그인 된 userName (null 가능성 있음)
 	String userName=(String)session.getAttribute("userName");
 	// 만일 본인 글 자세히 보기가 아니면 조회수를 1 증가시킨다. 
-	if(!dto.getWriter().equals(userName)){
+	/*if(!dto.getWriter().equals(userName)){
 		BoardDao.getInstance().addViewCount(num);
-	}
+	}*/
+	if(dto != null){
+        // 본인 글이 아니면 조회수 증가
+        if(!dto.getWriter().equals(userName)){
+            BoardDao.getInstance().addViewCount(num);
+        }
+    } else {
+        // 글이 존재하지 않는 경우
+        out.println("<script>alert('존재하지 않는 게시글입니다.');history.back();</script>");
+        return;
+    }
 	
 	// 댓글 목록을 DB 에서 읽어오기 num 은 원글의 글번호
 	List<CommentDto> commentList=CommentDao.getInstance().selectList(num);
@@ -34,6 +44,12 @@
 <meta charset="UTF-8">
 <title>/board/view.jsp</title>
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+<style>
+	/* 대댓글이 처음에는 보이지 않도록 하기 위해 */
+	.re-re{
+		display:none;
+	}
+</style>
 </head>
 <body>
 	<div class="container pt-3">
@@ -72,7 +88,7 @@
 				<th>작성자</th>
 				<td>
 				<%if(dto.getProfileImage()==null){ %>
-						<i style="font-size:100px;" " class="bi bi-person-circle"></i>
+						<i style="font-size:100px;"  class="bi bi-person-circle"></i>
 				<%}else{ %>
 					<img src="${pageContext.request.contextPath }/upload/<%=dto.getProfileImage() %>"
 						style="width:100px; height:100px; border-radius:50%;"  />
@@ -111,8 +127,6 @@
 				<a class="btn btn-warning mt-2 ms-1 " href="edit.jsp?num=<%=dto.getNum() %>"><i class="fas fa-pen"></i>수정하기</a>
 			</div>
 		<%} %>
-	
-		</form>
 		<div class="card my-3">
 		  <div class="card-header bg-primary text-white">
 		    댓글을 입력해 주세요
@@ -132,16 +146,23 @@
 		      <button type="submit" class="btn btn-success">등록</button>
 		    </form>
 		  </div>
-		</div>
+		
 		<!-- 댓글 목록을 출력하기 -->
 		<div class="comments">
-		<%for(CommentDto tmp:commentList) { %>
+			<%for(CommentDto tmp:commentList) { %>
 			<!-- 대댓글은 자신의 글번호와 댓글의 그룹번호가 다르다. 그런 경우에 왼쪽 마진을 부여한다. -->
-			<div class="card mt-3 mb-3 <%=tmp.getNum()==tmp.getGroupNum() ?"":"ms-5" %>">
+			<div class="card mt-3 mb-3 <%=tmp.getNum()==tmp.getGroupNum() ?"":"ms-5 re-re" %>">
 				<%if(tmp.getDeleted().equals("YES")){ %>
 					<div class="card-body bg-light text-muted rounded">삭제된 댓글입니다.</div>
 				<%}else{ %>
 		        	<div class="card-body d-flex flex-column flex-sm-row position-relative">
+	        			<%if(tmp.getReplyCount() != 0 && tmp.getNum() == tmp.getGroupNum()){ %>
+	            		<button class="dropdown-btn btn btn-outline-secondary btn-sm position-absolute"
+	            			style="bottom:16px; right:16px;">
+	            			<i class="bi bi-caret-down"></i>
+	            			답글 <%=tmp.getReplyCount() %> 개
+	            		</button>
+		            	<%} %>
 		        		<%if(tmp.getNum() != tmp.getGroupNum()){ %>
 		            		<i class="bi bi-arrow-return-right position-absolute" style="top:0;left:-30px"></i>
 		            	<%} %>
@@ -203,10 +224,43 @@
 	        </div> <!-- card -->
 			<%} %>
 		</div><!-- comments -->
+		</div>
 	</div><!-- .container -->
 	<script>
-	
+		
+		// 클라이언트가 로그인 했는지 여부
 		const isLogin= <%=isLogin %> ;
+		
+		// 대댓글 보기 버튼을 눌렀을 때 실행할 함수 등록  
+    	document.querySelectorAll(".dropdown-btn").forEach(item => {
+     		  item.addEventListener("click", (e) => {
+     			// click 이벤트가 발생한 버튼의 자손 요소 중에서  caret up, caret down 요소를 찾는다. 
+     			const caret = item.querySelector(".bi-caret-up, .bi-caret-down");
+     			// caret 모양을 위아래로 토글시킴. if 문 없어도 동작함
+     			if (caret) {
+     			  caret.classList.toggle("bi-caret-down");
+     			  caret.classList.toggle("bi-caret-up");
+     			}
+     			
+     		    // 1. 버튼(item)의 두 단계 부모 요소로 이동 (-> 카드를 가르킴 )
+     		    const grandParent = item.parentElement.parentElement;
+				// 2. 두 단계 부모요소의 바로 다음 형제 요소의 참조값을 얻어낸다.
+     		 	let next = grandParent.nextElementSibling;
+				// 3. 반복문을 통해
+  	   			while (next) {
+  	   				// re-re 클래스가 존재한다면 
+	  	   		    if (next.classList.contains("re-re")) {
+	  	   		    	// d-block 클래스를 토글시켜서 보였다 숨겼다 반복 
+			   		    next.classList.toggle("d-block");
+	  	   		    }else{// 존재하지 않으면 반복문 탈출
+	  	   		    	break;
+	  	   		    }
+  	   				// 그리고 그 다음 형제요소의 참조값을 얻어내서 계속 수행 
+	  	   		 	next = next.nextElementSibling;
+  	   				
+	  	   		}
+     		  });
+      	});
 		
 		// class 명이 edit-btn인 모든 버튼에 click 이벤트 리스너 등록
         document.querySelectorAll(".edit-btn").forEach( item => {

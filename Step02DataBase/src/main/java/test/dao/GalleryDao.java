@@ -179,9 +179,12 @@ public class GalleryDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         String sql = """
-            SELECT num, title, writer, content, TO_CHAR(createdAt, 'YYYY-MM-DD HH24:MI:SS') AS createdAt
-            FROM gallery
-            WHERE num = ?
+            SELECT g.num, g.title, g.writer, g.content, 
+        			TO_CHAR(g.createdAt, 'YYYY-MM-DD HH24:MI:SS') AS createdAt, 
+        			u.profileImage
+            FROM gallery g
+            INNER JOIN users u ON g.writer = u.userName
+            WHERE g.num = ?
             """;
 
         try {
@@ -197,6 +200,7 @@ public class GalleryDao {
                 dto.setWriter(rs.getString("writer"));
                 dto.setContent(rs.getString("content"));
                 dto.setCreatedAt(rs.getString("createdAt")); // string 처리
+                dto.setProfileImage(rs.getString("profileImage"));
             }
 
         } catch (SQLException e) {

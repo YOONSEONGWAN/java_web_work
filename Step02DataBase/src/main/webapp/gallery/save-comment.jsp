@@ -11,7 +11,7 @@
 	
 	// 댓글의 그룹번호가 넘어오는지 읽어와 본다(null 이면 원글의 댓글 저장 요청이다.)
 	String strGroupNum = request.getParameter("groupNum");
-	// 댓글의 그룹번호를 담을 변수를 미리 만들고
+	// 댓그르이 그룹번호를 담을 변수를 미리 만들고
 	int groupNum=0;
 	// 만일 댓글의 그룹번호가 넘어온다면 대댓글이다. (널이면 원글의 댓글)
 	if(strGroupNum !=null){
@@ -48,6 +48,6 @@
 	
 	String cPath=request.getContextPath();
 	// 원래글 자세히 보기 페이지로 이동
-	response.sendRedirect(cPath+"/board/view.jsp?num="+parentNum);
+	response.sendRedirect(cPath+"/gallery/view.jsp?num="+parentNum);
 	
 %>

@@ -13,6 +13,9 @@ public class GalleryDto {
 	// 사진이 여러개 이니까 List<GalleryImageDto> type 의 필드가 필요하다.
 	private List<GalleryImageDto> imageList;
 	
+	// profile image field
+	private String profileImage;
+	
 	// setter, getter
 	public int getNum() {
 		return num;
@@ -49,6 +52,12 @@ public class GalleryDto {
 	}
 	public void setImageList(List<GalleryImageDto> imageList) {
 		this.imageList = imageList;
+	}
+	public String getProfileImage() {
+		return profileImage;
+	}
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 	
 	
