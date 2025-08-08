@@ -27,7 +27,7 @@ public class SecurityFilter implements Filter{
 	Set<String> whiteList = Set.of(
 		"/index.jsp",
 		"/user/loginform.jsp","/user/login.jsp",
-		"/user/signup-form.jsp", "/user/signup.jsp",
+		"/user/signup-form.jsp", "/user/signup.jsp", "/user/check-id.jsp",
 		"/images/",
 		"/upload/", "/board/list.jsp", "/board/view.jsp",
 		"/test/", "/gallery/list.jsp"

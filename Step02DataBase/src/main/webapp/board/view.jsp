@@ -186,7 +186,7 @@
 		                            <strong><%=tmp.getWriter() %>></strong>
 		                            <span>@<%=tmp.getTargetWriter() %></span>
 		                        </div>
-		                        <small><%=tmp.getCreatedAt() %></small>
+		                        <small class="text-muted"><%=tmp.getCreatedAt() %></small>
 		                    </div>
 		                    <pre><%=tmp.getContent() %></pre>
 		                    <%-- 댓글 작성자가 로그인된 userName 과 같으면 수정폼, 다르면 댓글폼을 출력한다. --%>
