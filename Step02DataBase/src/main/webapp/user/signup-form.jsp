@@ -58,7 +58,8 @@
 			}
 		};
 		
-		document.querySelector("#userName").addEventListener("input", (e)=>{
+		document.querySelector("#userName").addEventListener("blur", (e)=>{ 
+			// 인풋 할 때마다 요청이 갈 필요는 없다. 따라서 포커스를 잃었을 때 동작하도록 고쳤다. (input -> blur)
 			// 현재까지 입력한 아이디를 읽어온다.
 			const inputId = e.target.value;
 			// 영문자 소문자로 시작하고 5글자~10글자 이내로 입력 < 검증조건을 만족했는지 여부를 알아낸다.
@@ -136,10 +137,10 @@
 			checkForm();
 		};	
 		// 비밀번호 혹은 비밀번호 확인란에 입력 했을 때 동일한 함수가 호출되도록 한다. 
-		document.querySelector("#pwd").addEventListener("input", checkPwd);
-		document.querySelector("#pwd2").addEventListener("input", checkPwd);
+		document.querySelector("#pwd").addEventListener("blur", checkPwd);
+		document.querySelector("#pwd2").addEventListener("blur", checkPwd);
 		
-		document.querySelector("#email").addEventListener("input", (e)=>{
+		document.querySelector("#email").addEventListener("blur", (e)=>{
 			
 			//이메일을 검증할 정규 표현식
 			const reg_email=/@/;
