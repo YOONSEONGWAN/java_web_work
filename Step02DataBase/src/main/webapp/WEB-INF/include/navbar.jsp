@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- /WEB-INF/include/navbar.jsp --%>
 <%
 	//navbar.jsp 페이지가 어떤 페이지에 include 되었는지 파라미터 읽어오기
@@ -17,44 +18,47 @@
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("member") ? "active":""%>" href="${pageContext.request.contextPath }/member/list.jsp">Member</a>
+						<a class="nav-link ${ param.thisPage eq 'member' ? 'active': ''}" href="${pageContext.request.contextPath }/member/list.jsp">Member</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("book") ? "active":""%>" href="${pageContext.request.contextPath }/book/list.jsp">Book</a>
+						<a class="nav-link ${ param.thisPage eq 'book' ? 'active': ''}" href="${pageContext.request.contextPath }/book/list.jsp">Book</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/board/list.jsp">Board</a>
+						<a class="nav-link ${ param.thisPage eq 'board' ? 'active': ''}" href="${pageContext.request.contextPath }/board/list.jsp">Board</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/gallery/list.jsp">Gallery</a>
+						<a class="nav-link ${ param.thisPage eq 'gallery' ? 'active': ''}" href="${pageContext.request.contextPath }/gallery/list.jsp">Gallery</a>
 					</li>
 				</ul>
-	            <!-- 오른쪽 사용자 메뉴 -->
+	             <!-- 오른쪽 사용자 메뉴 -->
 	            <ul class="navbar-nav">
-                <%if (userName == null) {%>
-	                <li class="nav-item">
-	                    <a class="btn btn-outline-light btn-sm me-2"
-	                       href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="btn btn-warning btn-sm"
-	                       href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
-	                </li>
-                <%}else {%>
-	                <li class="nav-item  me-2">
-					    <a class="nav-link  p-0"
-					       href="${pageContext.request.contextPath}/user/info.jsp">
-					        <strong><%= userName %></strong>
-					    </a>
-					</li>
-	                <li class="nav-item me-2">
-	                    <span class="navbar-text">Signed in</span>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="btn btn-danger btn-sm"
-	                       href="${pageContext.request.contextPath }/user/logout.jsp">로그아웃</a>
-	                </li>
-                <%}%>
+		            <c:choose>
+		            	<c:when test="${sessionScope.userName eq null }">
+			            	<li class="nav-item">
+		                    	<a class="btn btn-outline-light btn-sm me-2"
+		                       href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
+			                </li>
+			                <li class="nav-item">
+			                    <a class="btn btn-warning btn-sm"
+			                       href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
+			                </li>
+		            	</c:when>
+		            	<c:otherwise>
+		            		 <li class="nav-item  me-2">
+							    <a class="nav-link  p-0"
+							       href="${pageContext.request.contextPath}/user/info.jsp">
+							        <strong>${userName }</strong>
+							    </a>
+							</li>
+			                <li class="nav-item me-2">
+			                    <span class="navbar-text">Signed in</span>
+			                </li>
+			                <li class="nav-item">
+			                    <a class="btn btn-danger btn-sm"
+			                       href="${pageContext.request.contextPath }/user/logout.jsp">로그아웃</a>
+			                </li>
+		            	</c:otherwise>
+		            </c:choose>
                 </ul>
 			</div>
 		</div>

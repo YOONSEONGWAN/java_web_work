@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+
+	<select id="selectAll" resultType="com.example.spring04.dto.MemberDto">
+		SELECT num, name, addr
+		FROM member
+		ORDER BY num ASC
+	</select>
+
+	<!-- 
+		select 문을 사용할 때는 select 된 row 를 어떤 type 으로 받을지를 결정해야한다. -> resultType 필요
+		num, name, addr 이 select 된 상황에서
+		resultType 을 MemberDto 로 설정을 하면 
+		select 된 row 하나당 MemberDto 객체를 생성해서 setNum(), setName(), serAddr() 메소드를 
+		호출하면서 자동으로 데이터를 담아준다.
+		단) select 문에 명시한 칼럼명과 dto 의 필드명이 일치해야한다. 
+	 -->
+	<select id="getByNum" parameterType="int" resultType="com.example.spring04.dto.MemberDto">
+		SELECT num, name, addr
+		FROM member
+		WHERE num = #{num}
+	</select>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM member
+		WHERE num=#{num}
+	</delete>
+	
+	<update id="update" parameterType="com.example.spring04.dto.MemberDto">
+		UPDATE member
+		SET name=#{name}, addr=#{addr}
+		WHERE num=#{num}
+	</update>
+
+
+	<!-- 
+		이 xml 문서의 namespace: member
+		실행할 sql 문의 id: insert
+		parameter 로 전달되는 데이터의 type: MemberDto
+		#{name} : MemberDto 객체의 getName() 메소드를 호출해서 리턴되는 값을 해당 위치에 바인딩 해준다.
+		#{addr} : MemberDto 객체의 getAddr() 메소드를 호출해서 리턴되는 값을 해당 위치에 바인딩 해준다.
+		따라서 name, addr 은 dto 객체의 필드명과 일치시켜야함 (dto그대로가 담김) 
+		
+		insert 전에 pk 값을 미리 얻어내어 MemberDto 에 담을 수 있음. 키 프라퍼티의 num 과 Dto 의 필드명만 일치하면 된다.
+	 -->
+	<insert id="insert" parameterType="com.example.spring04.dto.MemberDto" >
+		<selectKey keyProperty="num" resultType="int" order="BEFORE">
+			SELECT member_seq.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO member
+		(num, name, addr)
+		VALUES(#{num}, #{name}, #{addr})
+	</insert>
+</mapper>
