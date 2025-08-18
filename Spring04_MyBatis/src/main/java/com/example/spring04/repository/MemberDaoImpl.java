@@ -15,6 +15,12 @@ public class MemberDaoImpl implements MemberDao{
 	@Autowired
 	private SqlSession session;
 	
+	// 생성자를 이용해서 의존 객체를 주입받는 게 더 일반적이다.(lombok 의 기능을 이용하면 생략이 가능하다.)
+	// @Autowired // 생성자가 오직 1개인 경우에는 생략이 가능하다.
+	public MemberDaoImpl(SqlSession session) {
+		this.session=session;
+	}
+	
 	@Override
 	public void insert(MemberDto dto) {
 		session.insert("member.insert", dto);
@@ -29,7 +35,7 @@ public class MemberDaoImpl implements MemberDao{
 	
 	@Override
 	public int deleteByNum(int num) {
-		
+		// 이 메소드는 정수값을 리턴해준다. 삭제된 로우의 갯수를 리턴해줌 
 		return session.delete("member.delete", num);
 	}
 	

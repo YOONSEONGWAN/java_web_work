@@ -9,6 +9,7 @@
 </head>
 <body>	
 	<div class="container">
+		<a href="${pageContext.request.contextPath }/member/new-form">회원 추가하기</a>
 		<h1>회원 목록입니다.</h1>
 		<table>
 			<thead>
@@ -29,10 +30,10 @@
 				<c:forEach var="tmp" items="${list }">
 					<tr>
 						<td>${tmp.getNum() }</td>
-						<td>${tmp.getName() }</td>
-						<td>${tmp.getAddr() }</td>
-						<td><a href="<c:url value='/member/edit'><c:param name='num' value='${tmp.num}'/></c:url>">수정하기</a></td>
-						<td><a href="<c:url value='/member/delete'><c:param name='num' value='${tmp.num}'/></c:url>">삭제하기</a></td>
+						<td>${tmp.name}</td>
+						<td>${tmp.addr}</td>
+						<td><a href="edit?num=${tmp.num }">수정하기</a></td>
+						<td><a href="delete?num=${tmp.num }">삭제하기</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
