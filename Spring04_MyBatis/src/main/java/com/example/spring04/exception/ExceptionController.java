@@ -33,4 +33,14 @@ public class ExceptionController {
 		
 		return "error/member-exception";
 	}
+	/***************************************************************/
+	
+	@ExceptionHandler(BookException.class)
+	public String bookException(BookException be, Model model) {
+		model.addAttribute("title", "Book 관련 작업 중 에러가 발생했습니다.");
+		model.addAttribute("message", be.getMessage());
+		model.addAttribute("reason", be.reason.name());
+		
+		return "error/book-exception";
+	}
 }

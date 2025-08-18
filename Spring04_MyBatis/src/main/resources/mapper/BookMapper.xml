@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+	<!-- Alias 사용 -->
+	<select id="selectAll" resultType="bookDto">
+		SELECT num, name, author, publisher
+		FROM book
+		ORDER BY num ASC
+	</select>
+	
+	<select id="getByNum" parameterType="int" resultType="bookDto">
+		SELECT num, name, author, publisher
+		FROM book
+		WHERE num = #{num}	
+	</select>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM book
+		WHERE num = #{num}
+	</delete>
+	
+	<update id="update" parameterType="bookDto">
+		UPDATE book
+		SET name=#{name}, author=#{author}, publisher=#{publisher}
+		WHERE num=#{num}
+	</update>
+	
+	<insert id="insert" parameterType="bookDto">
+		<selectKey keyProperty="num" resultType="int" order="BEFORE">
+			SELECT book_seq.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO book
+		(num, name, author, publisher)
+		VALUES(#{num}, #{name}, #{author}, #{publisher})
+	</insert>
+	
+</mapper>
