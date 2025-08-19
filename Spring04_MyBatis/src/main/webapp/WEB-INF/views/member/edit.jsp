@@ -19,7 +19,7 @@
 				<label for="addr">주소</label>
 				<input type="text" name="addr" id="addr" value="${dto.addr }" />
 			</div>
-			/<button type="submit">수정확인</button>
+			<button type="submit">수정확인</button>
 			<button type="reset"> 다시 작성</button>
 		</form>
 	</div>

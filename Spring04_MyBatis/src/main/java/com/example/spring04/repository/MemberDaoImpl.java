@@ -8,10 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import com.example.spring04.dto.MemberDto;
 
-@Repository
+@Repository // 이 어노테이션이 붙어있기 때문에 MemberDaoImpl 객체는 Spring 이 boot app 시작되는 시점에 직접 객체를 생성. 
 public class MemberDaoImpl implements MemberDao{
 
-	// MyBatis 를 사용할 때 필요한 핵!심객체
+	// MyBatis 를 사용할 때 필요한 핵!심객체 
+	// 생성자를 통한 주입
 	@Autowired
 	private SqlSession session;
 	
