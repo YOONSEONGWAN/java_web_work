@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/templates/delete.html</title>
+</head>
+<body>
+	<!--/* [[${param.num}]] 으로도 출력이 가능  */-->
+	<script th:inline="javascript">
+		alert("[[${num}]]번 회원의 정보를 성공적으로 삭제했어요 !");
+		location.href=[[@{/member/list}]];
+	</script>
+</body>
+</html>

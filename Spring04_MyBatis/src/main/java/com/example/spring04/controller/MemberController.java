@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.spring04.dto.MemberDto;
 import com.example.spring04.repository.MemberDao;
@@ -51,7 +52,7 @@ public class MemberController {
 	
 	
 	@GetMapping("/member/delete")
-	public String delete(int num) {
+	public String delete(@RequestParam("num") int num, Model model) {
 		/*
 		 * 	매개변수에 int num 을 선언하면 요청 파라미터 중에서 num 이라는 파라미터 명으로 전달되는
 		 * 	문자열을 자동 추출해서 integer.parseInt() 수행하고 실제 int 값으로 바꾼 뒤
@@ -59,6 +60,7 @@ public class MemberController {
 		 * 	int 값으로 바꿀 수 없는 문자열이 넘어오면 에러가 발생
 		 */
 		 service.deleteMember(num);
+		 model.addAttribute("num", num);
 		return "member/delete";
 	}
 	

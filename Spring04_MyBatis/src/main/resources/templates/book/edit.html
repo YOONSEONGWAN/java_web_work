@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/templates/book/edit.html</title>
+</head>
+<body>
+	<div class="container">
+		<h1>회원 수정 폼 타임리프</h1>
+		<form th:action="@{/book/update}" method="post">
+			<input type="hidden" name="num" th:value="${dto.num }" />
+			<div>
+				<label for="name">이름</label>
+				<input type="text" name="name" id="name" th:value="${dto.name }" />
+			</div>
+			<div>
+				<label for="author">저자</label>
+				<input type="text" name="author" id="author" th:value="${dto.author }" />
+			</div>
+			<div>
+				<label for="publisher">출판사</label>
+				<input type="text" name="publisher" id="publisher" th:value="${dto.publisher }" />
+			</div>
+			<button type="submit">수정 완료하기</button>
+			<button type="reset">다시 작성하기</button>
+		</form>
+	</div>
+</body>
+</html>

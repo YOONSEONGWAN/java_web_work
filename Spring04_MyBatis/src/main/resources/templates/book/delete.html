@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/templates/book/delete.html</title>
+</head>
+<body>
+	<script th:inline="javascript">
+		alert("[[${num}]]번 책의 정보를 성공적으로 삭제했어요 !");
+		location.href=[[@{/book/list}]];
+	</script>
+</body>
+</html>

@@ -11,6 +11,53 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class TestController {
 	
+	@GetMapping("/javascript")
+	public String javascript(Model model) {
+		//로그인여부
+		model.addAttribute("isLogin", false);
+		//나이
+		model.addAttribute("age", 15);
+		//이름
+		model.addAttribute("name", "김구라");
+		
+		//회원 한명의 정보 
+		MemberDto dto=MemberDto.builder()
+				.num(1)
+				.name("김구라")
+				.addr("노량진")
+				.build();
+		// 해당 데이터를 Model 객체에 담고 
+		model.addAttribute("dto", dto);
+		
+		//DB 에서 select 한 결과라고 가정하자 
+		MemberDto dto1=MemberDto.builder().num(1).name("김구라").addr("노량진").build();
+		MemberDto dto2=MemberDto.builder().num(2).name("해골").addr("행신동").build();
+		MemberDto dto3=MemberDto.builder().num(3).name("원숭이").addr("상도동").build();
+		
+		// read only List 
+		List<MemberDto> list=List.of(dto1, dto2, dto3);
+		
+		//Model 객체에 "list" 라는 키값으로 담기
+		model.addAttribute("list", list);
+		
+		return "javascript";
+	}
+	
+	@GetMapping("/unescape")
+	public String unescape(Model model) {
+		// html 형식의 문자열을 templates 페이지에 전달할 일도 있다.
+		String content="""
+			<ul>
+				<li>하나</li>
+				<li>둘둘</li>
+				<li>셋셋</li>
+			</ul>	
+		""";
+		model.addAttribute("content", content);
+		
+		return "unescape";
+	}
+	
 	@GetMapping("/print-num")
 	public String printNum(Model model) {
 		

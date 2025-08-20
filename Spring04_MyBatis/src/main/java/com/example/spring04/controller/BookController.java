@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.spring04.dto.BookDto;
 import com.example.spring04.service.BookService;
@@ -37,8 +38,9 @@ public class BookController {
 	
 	
 	@GetMapping("/book/delete")
-	public String delete(int num) {
+	public String delete(@RequestParam("num") int num, Model model) {
 		service.deleteBook(num);
+		model.addAttribute("num", num);
 		return "book/delete";
 	}
 	
