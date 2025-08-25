@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/board/list.html</title>
+<th:block th:insert="/include/resource :: bootstrap"></th:block>
+</head>
+<body>
+	
+	<th:block th:insert="/include/navbar :: nav('board')"></th:block>
+	
+	<div class="container pt-2">
+		<a class="btn btn-outline-primary btn-sm" th:href="@{/board/new-form}">
+			새 글 작성
+			<i class="bi bi-pencil-square"></i>
+		</a>
+		<h1>게시글 목록입니다.</h1>
+		<!-- 행을 만들고 -->
+		<div class="row mb-2">
+			<!-- 12분의 4인 칼럼을 만들고 margin-start:auto 를 부여해서 왼쪽 마진을 자동 부여한다. -->
+			<div class="col-lg-4 col-md-6 ms-auto">
+				<form th:action="@{/board/list}" method="get">
+					<div class="input-group">
+						<input th:value="${#strings.isEmpty(dto.keyword) ? '' : dto.keyword}"  
+								type="text" 
+								name="keyword" 
+								class="form-control" 
+								placeholder="검색어 입력..." />
+						<button type="submit" class="btn btn-outline-secondary">검색<i class="bi bi-search"></i></button>
+					</div>
+				</form>
+				
+			</div>
+		</div>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>글 번호</th>
+					<th>작성자</th>
+					<th>제목</th>
+					<th>조회수</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="tmp : ${dto.list}">
+					<td th:text="${tmp.num}"></td>
+					<td>[[${tmp.writer}]]</td>
+					<td>
+						<a th:href="@{/board/view(num=${tmp.num})}">
+						[[${tmp.title}]]</a>
+					</td>
+					<td th:text="${tmp.viewCount}"></td>
+					<td th:text="${tmp.createdAt}"></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<ul class="pagination">
+			<li th:if="${dto.startPageNum ne 1}" class="page-item">
+				<a class="page-link" th:href="@{/board/list(pageNum=${dto.startPageNum - 1}, keyword=${dto.keyword})}">&lsaquo;</a>
+			</li>
+			<li th:each="i : ${#numbers.sequence(dto.startPageNum, dto.endPageNum)}" class="page-item">
+				<a class="page-link" 
+					th:classappend="${i==dto.pageNum ? 'active' : null} " 
+					th:href="@{/board/list(pageNum=${i}, keyword=${dto.keyword})}">
+					[[${i}]]
+				</a>
+			</li>
+			<li th:if="${dto.endPageNum < dto.totalPageCount}" class="page-item">
+				<a class="page-link" th:href="@{/board/list(pageNum=${dto.endPageNum+1}, keyword${dto.keyword})}">&rsaquo;</a>
+			</li>
+		</ul>
+		
+	</div>
+</body>
+</html>

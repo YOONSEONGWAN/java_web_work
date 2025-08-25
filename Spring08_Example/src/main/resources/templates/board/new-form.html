@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/board/new-form.html</title>
+<th:block th:insert="/include/resource :: bootstrap"></th:block>
+<th:block th:insert="/include/resource :: toastui"></th:block>
+</head>
+<body>
+	<th:block th:insert="/include/navbar :: nav('board')"></th:block>
+	<div class="container">
+		
+		<nav>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a th:href="@{/}">Home</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a th:href="@{/board/list}">Board</a>
+				</li>
+				<li class="breadcrumb-item active">
+					새 글 작성
+				</li>
+			</ul>
+		</nav>
+		
+		<h1>게시글 작성 양식</h1>
+		<form th:action="@{/save}" method="post" id="saveForm">
+			<div class="mb-2">
+				<label class="form-label" for="title">제목</label>
+				<input class="form-control" type="text" name="title" id="title" />
+			</div>
+			<div class="mb-2">
+				<label class="form-lable" for="editor">내용</label>
+				<!-- Editor UI 가 출력될 div -->
+				<div id="editor"></div>
+				
+				<textarea class="form-control d-none" name="content" id="hiddencontent" ></textarea>
+			</div>
+			<button class="btn btn-success btn-sm" type="submit">저장</button>
+			<a class="btn btn-danger btn-sm" href="${pageContext.request.contextPath }/board/list.jsp">취소</a>
+		</form>
+	</div>
+	<script>
+		// 위에 toast ui javascript 가 로딩 되어 있으면, toastui.Editor 클래스를 생성할 수 있다.
+		// 해당 클래스를 이용해서 객체 생성하면서 {} object 로 ui 에 관련된 옵션을 잘 전달하면 
+		// 우리가 원하는 모양의 텍스트 편집기를 만들 수 있다. 
+		const editor = new toastui.Editor({
+			el: document.querySelector('#editor'),
+			height: '500px',
+			initialEditType: 'wysiwyg',
+			previewStyle: 'vertical',
+			language: 'ko'
+		});
+		
+		document.querySelector("#saveForm").addEventListener("submit", (e)=>{
+			// Editor 로 작성된 문자열 읽어오기
+			const content = editor.getHTML();
+			// 테스트로 콘솔에 출력하기
+			console.log(content);
+			// editor 로 작성된 문자열을 폼 전송이 될 수 있는 textarea 의 value 에 강제로 넣어준다.
+			document.querySelector("#hiddencontent").value=content;
+			// 테스트 하기 위해 폼 전송 막기
+			//e.preventDefault();
+		})
+	</script>
+</body>
+</html>

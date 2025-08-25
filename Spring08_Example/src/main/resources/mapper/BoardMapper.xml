@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<!-- 
+		application.properties 파일에 
+		# type 에 별칭을 붙인 클래스를 찾아서 로딩하기 위해
+		# com.example.spring08. 하위 패키지에서 모든 @Alias 가 붙은 클래스를 찾아서 사용할 준비를 한다.
+		mybatis.type-aliases-package=com.example.spring08.**
+		이 설정 때문에 Dto 클래스의 이름으로 parameterType 혹은 resultType 을 간단하게 작성할 수 있다.
+		default 동작은 클래스명의 첫글자를 소문자로 작성하면 된다.
+		다른 이름으로 사용하고 싶으면 @Alias("다른이름") 을 dto 클래스에 작성해서 사용할 수 있다.
+	 -->
+	<select id="selectPage" parameterType="boardDto" resultType="boardDto">
+		SELECT *
+		FROM
+			(SELECT result1.*, ROWNUM AS rnum
+			FROM
+				(SELECT num, writer, title, content, viewCount, createdAt
+				FROM board
+				ORDER BY num DESC) result1)
+		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum} 
+	</select>
+	
+	<select id="selectPageByKeyword" parameterType="boardDto" resultType="boardDto">
+		SELECT *
+		FROM
+			(SELECT result1.*, ROWNUM AS rnum
+			FROM
+				(SELECT num, writer, title, content, viewCount, createdAt
+				FROM board
+				WHERE title LIKE '%'||#{keyword}||'%' OR content LIKE '%'||#{keyword}||'%' 
+				ORDER BY num DESC) result1)
+		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum} 
+	</select>
+	
+	<select id="getCount" resultType="int">
+		SELECT NVL(MAX(ROWNUM), 0) AS count
+		FROM board
+	</select>
+	
+	<select id="getCountByKeyword" parameterType="String" resultType="int">
+		SELECT NVL(MAX(ROWNUM), 0) AS count
+		FROM board
+		WHERE title LIKE '%'||#{keyword}||'%' OR content LIKE '%'||#{keyword}||'%' 
+	</select>
+	
+	<!-- 
+		아래와 같이 insert 문을 구성하면
+		1. insert 문이 실행되기 전에 시퀀스 값을 미리 읽어와서
+		2. parameterType 으로 전달된 boardDto 객체에 담긴다.
+		3. 그 다음 insert 문이 실행되기 때문에 ${num}에는 시퀀스로 얻어낸 값 들어감
+	 -->
+	<insert id="insert" parameterType="boardDto">
+		<selectKey keyProperty="num" resultType="int" order="BEFORE" >
+			SELECT board_seq.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO board
+		(num, writer, title, content)
+		VALUES(#{num}, #{writer}, #{title}, #{content})
+	</insert>
+	
+	<select id="getByNum" parameterType="int" resultType="boardDto">
+		SELECT *
+		FROM	
+			(SELECT b.num, writer, title, content, viewCount, 
+				TO_CHAR(b.createdAt, 'YY"년" MM"월" DD"일" HH24:MI') AS createdAt, 
+				profileImage,
+				LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
+				LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
+			FROM board b
+			INNER JOIN users u ON b.writer = u.userName) 
+		WHERE num=#{num}
+	</select>
+</mapper>
