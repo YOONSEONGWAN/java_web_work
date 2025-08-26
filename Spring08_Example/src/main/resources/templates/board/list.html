@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>/templates/board/list.html</title>
-<th:block th:insert="/include/resource :: bootstrap"></th:block>
+<th:block th:insert="~{/include/resource :: bootstrap}"></th:block>
 </head>
 <body>
 	
-	<th:block th:insert="/include/navbar :: nav('board')"></th:block>
+	<th:block th:insert="~{/include/navbar :: nav('board')}"></th:block>
 	
 	<div class="container pt-2">
 		<a class="btn btn-outline-primary btn-sm" th:href="@{/board/new-form}">
@@ -18,9 +18,16 @@
 		<!-- 행을 만들고 -->
 		<div class="row mb-2">
 			<!-- 12분의 4인 칼럼을 만들고 margin-start:auto 를 부여해서 왼쪽 마진을 자동 부여한다. -->
-			<div class="col-lg-4 col-md-6 ms-auto">
+			<div class="col-md-6 ms-auto">
 				<form th:action="@{/board/list}" method="get">
 					<div class="input-group">
+					
+						<select name="search" class="form-select">
+							<option th:selected="${dto.search eq 'title_content'}" value="title_content">제목+내용</option>
+							<option th:selected="${dto.search eq 'title'}" value="title">제목</option>
+							<option th:selected="${dto.search eq 'writer'}" value="writer">작성자</option>
+						</select>
+					
 						<input th:value="${#strings.isEmpty(dto.keyword) ? '' : dto.keyword}"  
 								type="text" 
 								name="keyword" 
@@ -32,6 +39,10 @@
 				
 			</div>
 		</div>
+		<p th:if="${dto.keyword ne null}" >
+			<strong th:text="${dto.keyword}"></strong>에 대한 검색 결과
+			<strong th:text="${dto.totalRow}"></strong>개
+		</p>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -68,7 +79,7 @@
 				</a>
 			</li>
 			<li th:if="${dto.endPageNum < dto.totalPageCount}" class="page-item">
-				<a class="page-link" th:href="@{/board/list(pageNum=${dto.endPageNum+1}, keyword${dto.keyword})}">&rsaquo;</a>
+				<a class="page-link" th:href="@{/board/list(pageNum=${dto.endPageNum+1}, keyword=${dto.keyword})}">&rsaquo;</a>
 			</li>
 		</ul>
 		

@@ -22,4 +22,32 @@
 			ORDER BY c.groupNum ASC, c.num ASC
 		]]>	
 	</select>
+	
+	<select id="getSequence" resultType="int">
+		SELECT comments_seq.NEXTVAL AS num FROM DUAL
+	</select>
+	
+	<insert id="insert" parameterType="commentDto">
+		INSERT INTO comments
+		(num, writer, targetWriter, content, parentNum, groupNum)
+		VALUES(#{num}, #{writer}, #{targetWriter}, #{content}, #{parentNum}, #{groupNum})
+	</insert>
+	
+	<update id="delete" parameterType="int">
+		UPDATE comments
+		SET deleted='YES'
+		WHERE num=#{num}
+	</update>
+	
+	<update id="update" parameterType="commentDto">
+		UPDATE comments
+		SET content=#{content}
+		WHERE num=#{num}
+	</update>
+	
+	<select id="getByNum" parameterType="int" resultType="commentDto">
+		SELECT num, writer, targetWriter, content, parentNum, groupNum, createdAt
+		FROM comments
+		WHERE num=#{num}
+	</select>
 </mapper>

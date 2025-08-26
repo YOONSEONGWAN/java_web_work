@@ -28,26 +28,14 @@ public class BoardDaoImpl implements BoardDao {
 		return session.selectList("board.selectPage", dto);
 	}
 
-	@Override
-	public List<BoardDto> selectPageByKeyword(BoardDto dto) {
-		
-		return session.selectList("board.selectPageByKeyword", dto);
-	}
+	
 
 	@Override
-	public int getCount() {
+	public int getCount(BoardDto dto) {
 		// resultType : int
-		return session.selectOne("board.getCount");
+		return session.selectOne("board.getCount", dto);
 	}
 
-	@Override
-	public int getCountByKeyword(String keyword) {
-		/*
-		 * 	parameterType: string
-		 * 	resultType: int
-		 */
-		return session.selectOne("board.getCountByKeyword", keyword);
-	}
 
 	@Override
 	public void insert(BoardDto dto) {
@@ -60,6 +48,19 @@ public class BoardDaoImpl implements BoardDao {
 	public BoardDto getByNum(int num) {
 		
 		return session.selectOne("board.getByNum", num);
+	}
+
+
+
+	@Override
+	public int delete(int num) {
+		return session.delete("board.delete", num);
+	}
+
+
+	@Override
+	public int update(BoardDto dto) {
+		return session.update("board.update", dto);
 	}
 	
 }

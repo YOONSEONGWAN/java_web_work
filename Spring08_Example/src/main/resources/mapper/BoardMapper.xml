@@ -17,31 +17,39 @@
 			FROM
 				(SELECT num, writer, title, content, viewCount, createdAt
 				FROM board
-				ORDER BY num DESC) result1)
+				
+				
+				<choose>
+					<when test="search == 'writer' ">
+						WHERE writer Like '%' || #{keyword} || '%'
+					</when>
+					<when test="search == 'title' ">
+						WHERE title Like '%' || #{keyword} || '%'
+					</when>
+					<when test="search == 'title_content' ">
+						WHERE title Like '%' || #{keyword} || '%' OR content Like '%' || #{keyword} || '%'
+					</when>
+				</choose>
+				ORDER BY num DESC
+				) result1)
 		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum} 
 	</select>
 	
-	<select id="selectPageByKeyword" parameterType="boardDto" resultType="boardDto">
-		SELECT *
-		FROM
-			(SELECT result1.*, ROWNUM AS rnum
-			FROM
-				(SELECT num, writer, title, content, viewCount, createdAt
-				FROM board
-				WHERE title LIKE '%'||#{keyword}||'%' OR content LIKE '%'||#{keyword}||'%' 
-				ORDER BY num DESC) result1)
-		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum} 
-	</select>
 	
-	<select id="getCount" resultType="int">
+	<select id="getCount" parameterType="boardDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0) AS count
 		FROM board
-	</select>
-	
-	<select id="getCountByKeyword" parameterType="String" resultType="int">
-		SELECT NVL(MAX(ROWNUM), 0) AS count
-		FROM board
-		WHERE title LIKE '%'||#{keyword}||'%' OR content LIKE '%'||#{keyword}||'%' 
+		<choose>
+			<when test="search == 'writer' ">
+				WHERE writer Like '%' || #{keyword} || '%'
+			</when>
+			<when test="search == 'title' ">
+				WHERE title Like '%' || #{keyword} || '%'
+			</when>
+			<when test="search == 'title_content' ">
+				WHERE title Like '%' || #{keyword} || '%' OR content Like '%' || #{keyword} || '%'
+			</when>
+		</choose>
 	</select>
 	
 	<!-- 
@@ -71,4 +79,16 @@
 			INNER JOIN users u ON b.writer = u.userName) 
 		WHERE num=#{num}
 	</select>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM board
+		WHERE num=#{num}
+	</delete>
+	
+	<update id="update" parameterType="boardDto">
+		UPDATE board
+		SET title=#{title}, content=#{content}
+		WHERE num=#{num}
+	</update>
+	
 </mapper>

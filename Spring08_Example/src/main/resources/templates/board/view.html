@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>/templates/board/view.html</title>
-<th:block th:insert="/include/resource :: bootstrap"></th:block>
+<th:block th:insert="~{/include/resource :: bootstrap}"></th:block> <!-- ~{ } 를 사용하면 경고가 안 뜬다(최신표현식) -->
 <style>
 	/* 대댓글이 처음에는 보이지 않도록 하기 위해 */
 	.re-re{
@@ -56,7 +56,7 @@
 						class="bi bi-person-circle"></i>
 					<img th:unless="${dto.profileImage == null}" 
 						 th:src="@{/upload/{img}(img=${dto.profileImage})}"
-						style="width:100px; height:100px; border-radius:50%;"  />
+						 style="width:100px; height:100px; border-radius:50%;"  />
 				
 					[[${dto.writer}]]
 				</td>
@@ -80,13 +80,15 @@
 		    <strong>본문 내용</strong>
 		  </div>
 		  <div class="card-body p-1">
-		    [[${dto.content}]]
+		    [(${dto.content})] 
 		  </div>
 		</div>
 			<div class="text-end pt-2" th:if="${dto.writer == userName}" >
-				<a class="btn btn-warning mt-2 ms-1 " 
+				<a class="btn btn-warning btn-sm " 
 					th:href="@{/board/edit(num=${dto.num})}">
 					<i class="fas fa-pen"></i>수정하기</a>
+				<a class="btn btn-danger btn-sm"
+					th:href="@{/board/delete(num=${dto.num})}">삭제하기</a>
 			</div>
 		<div class="card my-3">
 		  <div class="card-header bg-primary text-white">
@@ -96,8 +98,8 @@
 		    <!-- 원글의 댓글을 작성할 폼 -->
 		    <form th:action="@{/board/save-comment}" method="post">
 		      <!-- 숨겨진 입력값 -->
-		      <input type="hidden" name="parentNum" th:value="${dto.Num}"/>
-		      <input type="hidden" name="targetWriter" th:value="${dto.Writer}" />
+		      <input type="hidden" name="parentNum" th:value="${dto.num}"/>
+		      <input type="hidden" name="targetWriter" th:value="${dto.writer}" />
 		
 		      <div class="mb-3">
 		        <label for="commentContent" class="form-label">댓글 내용</label>
@@ -108,22 +110,24 @@
 		    </form>
 		  </div>
 		
-		<!-- 댓글 목록을 출력하기 -->
-		<div class="comments" th:each="tmp : ${dto.commentList}">
-			<!-- 대댓글은 자신의 글번호와 댓글의 그룹번호가 다르다. 그런 경우에 왼쪽 마진을 부여한다. -->
-			<div class="card mt-3 mb-3" th:classappend="${tmp.num != tmp.groupNum} ? 'ms-5 re-re' : '' ">
-				<div class="card-body bg-light text-muted rounded" th:if="${tmp.deleted == 'YES'}">삭제된 댓글입니다.</div>
-	        	<div class="card-body d-flex flex-column flex-sm-row position-relative"
-	        		 th:if="${tmp.replyCount !=0 and tmp.num == tmp.groupNum}">
-            		<button class="dropdown-btn btn btn-outline-secondary btn-sm position-absolute"
-            			style="bottom:16px; right:16px;">
-            			<i class="bi bi-caret-down"></i>
-            			답글 [[${tmp.replyCount}]] 개
-            		</button>
-	            		<i class="bi bi-arrow-return-right position-absolute" style="top:0;left:-30px"
-	            			th:if="${tmp.num != tmp.groupNum}"></i>
+			<!-- 댓글 목록을 출력하기 -->
+			<div class="comments" >
+				<!-- 대댓글은 자신의 글번호와 댓글의 그룹번호가 다르다. 그런 경우에 왼쪽 마진을 부여한다. -->
+				<div th:each="tmp : ${commentList}" class="card mt-3 mb-3" 
+						th:classappend="${tmp.num != tmp.groupNum} ? 'ms-5 re-re' : '' ">
+					<div th:if="${tmp.deleted == 'YES'}" class="card-body bg-light text-muted rounded">삭제된 댓글입니다.</div>
+		        	<div th:unless="${tmp.deleted == 'YES'}"
+		        		 class="card-body d-flex flex-column flex-sm-row position-relative">
+	            		<button th:if="${tmp.replyCount !=0 and tmp.num == tmp.groupNum}"
+	            				class="dropdown-btn btn btn-outline-secondary btn-sm position-absolute"
+	            				style="bottom:16px; right:16px;">
+	            			<i class="bi bi-caret-down"></i>
+	            			답글 [[${tmp.replyCount}]] 개
+	            		</button>
+	            		<i 	th:if="${tmp.num != tmp.groupNum}"
+	            			class="bi bi-arrow-return-right position-absolute" style="top:0;left:-30px"></i>
 		            	<button th:if="${tmp.writer == userName}"
-		            			th:data-num="${tmp.num}" 
+		            			th:attr="data-num=${tmp.num}" 
 		            			class="btn-close position-absolute top-0 end-0 m-1"></button>
 	            		<i th:if="${tmp.profileImage == null}" 
 	            			style="font-size:50px" 
@@ -133,54 +137,54 @@
 		                	th:src="@{/upload/{img}(img=${tmp.profileImage})}"
 		                	alt="프로필 이미지" 
 		                	style="width:50px; height:50px;">
-	                <div class="flex-grow-1">
-	                    <div class="d-flex justify-content-between">
-	                        <div>
-	                            <strong th:text="${tmp.writer}"></strong>
-	                            <span>@[[${tmp.targetWriter}]]</span>
-	                        </div>
-	                        <small class="text-muted" th:text="${tmp.createdAt}"></small>
-	                    </div>
-	                    <pre th:text="${tmp.content}"></pre>
-                   	    <button th:if="${tmp.writer == userName}"
-                    	    	class="btn btn-sm btn-outline-secondary edit-btn">수정</button>
-		                    <!-- 댓글 입력 폼(처음에는 숨김)-->
-		                    <div class="d-none form-div">
-		                        <form th:action="@{/board/comment-update}" method="post">
-		                        	<!-- 댓글을 수정하기 위한 댓글의 번호, 이 페이지로 다시 돌아오기 위한 parentNum 도 같이 전송되도록 -->
-		                        	<input type="hidden" name="num" th:value="${tmp.num}" />
-		                        	<input type="hidden" name="parentNum" th:value="${dto.num}" />
-		                            <textarea name="content" class="form-control mb-2" rows="2" th:text="${tmp.content}"></textarea>
-		                            <button type="submit" class="btn btn-sm btn-success">수정 완료</button>
-		                            <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn">취소</button>
-		                        </form>
+		                <div class="flex-grow-1">
+		                    <div class="d-flex justify-content-between">
+		                        <div>
+		                            <strong th:text="${tmp.writer}"></strong>
+		                            <span>@[[${tmp.targetWriter}]]</span>
+		                            <small class="text-muted" th:text="${tmp.createdAt}"></small>
+		                        </div>
 		                    </div>
-		                <button th:unless="${tmp.writer == userName}"
-		                    	class="btn btn-sm btn-outline-primary show-reply-btn">댓글</button>
-		                    <!-- 댓글 입력 폼(처음에는 숨김)-->
-	                    <div class="d-none form-div">
-	                        <form th:action="@{/board/save-comment}" method="post">
-	                        	<!-- 원글의 글번호, 댓글 대상자의 userName, 댓글의 그룹번호도 같이 전송해야한다. -->
-	                        	<input type="hidden" name="parentNum" th:value="${dto.num}" />
-	                        	<input type="hidden" name="targetWriter" th:value="${tmp.writer}" /><!-- 댓글의 작성자 -->
-	                        	<input type="hidden" name="groupNum" th:value="${tmp.groupNum}" /><!-- 댓글의 글번호가 그룹번호가됨 -->
-	                            <textarea name="content" class="form-control mb-2" rows="2" placeholder="댓글을 입력하세요..."></textarea>
-	                            <button type="submit" class="btn btn-sm btn-success">등록</button>
-	                            <button type="reset" class="btn btn-sm btn-secondary cancel-reply-btn">취소</button>
-	                        </form>
-	                    </div>
-	                </div>
-	            </div> <!-- card-body -->
-	        </div> <!-- card -->
-		</div><!-- comments -->
+		                    <pre th:text="${tmp.content}"></pre>
+		                    <th:block th:if="${tmp.writer == userName}">
+		                    	<!-- 수정버튼(본인에게만 보임) -->
+		                    	<button class="btn btn-sm btn-outline-secondary edit-btn">수정</button>
+			                    <!-- 댓글 입력 폼(처음에는 숨김)-->
+			                    <div class="d-none form-div">
+			                        <form th:action="@{/board/comment-update}" method="post">
+			                        	<!-- 댓글을 수정하기 위한 댓글의 번호, 이 페이지로 다시 돌아오기 위한 parentNum 도 같이 전송되도록 -->
+			                        	<input type="hidden" name="num" th:value="${tmp.num}" />
+			                        	<input type="hidden" name="parentNum" th:value="${dto.num}" />
+			                            <textarea name="content" class="form-control mb-2" rows="2" th:text="${tmp.content}"></textarea>
+			                            <button type="submit" class="btn btn-sm btn-success">수정 완료</button>
+			                            <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn">취소</button>
+			                        </form>
+			                    </div>
+		                    </th:block>
+		                    <th:block th:unless="${tmp.writer == userName}">
+			                   	<button class="btn btn-sm btn-outline-primary show-reply-btn">댓글</button>
+				                <!-- 댓글 입력 폼(처음에는 숨김)-->
+			                    <div class="d-none form-div">
+			                        <form th:action="@{/board/save-comment}" method="post">
+			                        	<!-- 원글의 글번호, 댓글 대상자의 userName, 댓글의 그룹번호도 같이 전송해야한다. -->
+			                        	<input type="hidden" name="parentNum" th:value="${dto.num}" />
+			                        	<input type="hidden" name="targetWriter" th:value="${tmp.writer}" /><!-- 댓글의 작성자 -->
+			                        	<input type="hidden" name="groupNum" th:value="${tmp.groupNum}" /><!-- 댓글의 글번호가 그룹번호가됨 -->
+			                            <textarea name="content" class="form-control mb-2" rows="2" placeholder="댓글을 입력하세요..."></textarea>
+			                            <button type="submit" class="btn btn-sm btn-success">등록</button>
+			                            <button type="reset" class="btn btn-sm btn-secondary cancel-reply-btn">취소</button>
+			                        </form>
+			                    </div>
+		                    </th:block>
+		                </div>
+		            </div> <!-- card-body -->
+		        </div> <!-- card -->
+			</div><!-- comments -->
 		</div>
 	</div><!-- .container -->
-	<script th:inline="javascript">
-		
+	<script>
 		// 클라이언트가 로그인 했는지 여부
-		const isLogin = /*[[${isLogin}]]*/ false;
-  		const viewUrl = /*[[@{/board/view(num=${dto.num})}]]*/ '';
-  		const loginUrl = /*[[@{/user/login-form(url=${'/board/view?num=' + dto.num})}]]*/ '';
+		const isLogin = [[${isLogin}]];
 		
 		// 대댓글 보기 버튼을 눌렀을 때 실행할 함수 등록  
     	document.querySelectorAll(".dropdown-btn").forEach(item => {
@@ -240,9 +244,8 @@
                 const num=item.getAttribute("data-num");
                 const isDelete=confirm(num+"번 댓글을 삭제 하시겠습니까?")
                 if(isDelete){ //true 일때 삭제, false일때 취소
-                	// n번 글에 달린n번 댓글을 삭제하겟다. \$ 앞에 역슬래시로 브라우저가 읽지 않도록 
-                	// delte.jsp?num=삭제할 댓글 번호&parentNum=원글의 글번호 형식의 요청이 되도록 한다.
-                	location.href=`comment-delete.jsp?num=\${num}&parentNum=<%=num %>`;
+					// 댓글 삭제 링크 
+                	location.href=`[[@{/board/comment-delete}]]?num=${num}&parentNum=[[${dto.num}]]`;
                 }
             });
         })
@@ -252,7 +255,7 @@
 			if(!isLogin){
 				alert("댓글 작성을 위해 로그인이 필요합니다!");
     			location.href= 
-    				"${pageContext.request.contextPath }/user/loginform.jsp?url=${pageContext.request.contextPath }/board/view.jsp?num=<%=num %>";
+    				"[[@{/user/loginform}]]?url=[[@{/board/view(num=${dto.num})}]]";
     		}
 		});
 		
@@ -263,8 +266,7 @@
             	// 댓글 버튼을 눌렀을 때 만일 로그인 하지 않았다면
     			if(!isLogin){
     				alert("댓글 작성을 위해 로그인이 필요합니다!");
-        			location.href= 
-        				"${pageContext.request.contextPath }/user/loginform.jsp?url=${pageContext.request.contextPath }/board/view.jsp?num=<%=num %>";
+    				location.href = "[[@{/user/loginform}]]?url=[[@{/board/view(num=${dto.num})}]]";
         			return; // 리턴으로 아래 폼 안 열리게 하기
     			}
                 // 클릭한 버튼의 다음 형제요소의 class 목록에서 d-none 제거
