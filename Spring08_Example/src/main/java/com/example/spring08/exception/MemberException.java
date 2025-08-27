@@ -1,0 +1,35 @@
+package com.example.spring08.exception;
+/*
+ * 	1. RuntimeException 클래스를 상속받은 나만의 예외 클래스를 정의한다.
+ * 
+ * 	2. Member 카테고리 관련 작업을 하다가 발생하는 에러를 처리할 예정이다.
+ */
+public class MemberException extends RuntimeException {
+
+	// 열거형 클래스
+	public enum Reason{
+		NOT_FOUND, UPDATE_FAILED, DELETE_FAILED
+	}
+	
+	// final 필드
+	public final Reason reason;
+	
+	// 생성자
+	public MemberException(Reason reason, String message) {
+		// 부모 생성자에 예외 메세지를 전달한다.
+		super(message);
+		// 필드에 예외 원인을 저장한다. 
+		this.reason=reason;
+	}
+	
+	// 예외 객체를 편리하게 만들어서 리턴해주는 편의 메소드 
+	public static MemberException notFound(int num) {
+		return new MemberException(Reason.NOT_FOUND, num+"번 회원이 없습니다.");
+	}
+	public static MemberException updateFailed(int num) {
+		return new MemberException(Reason.UPDATE_FAILED, num+"번 회원 수정 실패.");
+	}
+	public static MemberException deleteFailed(int num) {
+		return new MemberException(Reason.UPDATE_FAILED, num+"번 회원 삭제 실패.");
+	}
+}

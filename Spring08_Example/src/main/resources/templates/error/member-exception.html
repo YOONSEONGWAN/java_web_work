@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/templates/error/member-exception.html</title>
+</head>
+<body>
+	<div class="container">
+		<h1 th:text="[[${title}]]"></h1>
+		<p th:text="[[${message}]]"></p>
+		<p>원인: <strong th:text="[[${reason}]]"></strong></p>
+	
+	</div>
+</body>
+</html>

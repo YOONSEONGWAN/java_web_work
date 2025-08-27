@@ -58,9 +58,13 @@ public class BoardServiceImpl implements BoardService{
 		List<BoardDto> list=boardDao.selectPage(dto);
 		
 		// query 문자열을 미리 구성해서 view page 에 전달하도록 한다.
+		/*
+		 * 	검색 키워드가 없으면 query="" 빈문자열
+		 *  검색 키워드가 있으면 query="&search=검색조건&keyword=검색어" 형식의 문자열
+		 */
 		String query="";
 		if(dto.getKeyword() !=null) {
-			query="search"+dto.getSearch()+"&keyword="+dto.getKeyword();
+			query="&search="+dto.getSearch()+"&keyword="+dto.getKeyword();
 		}
 		
 		// 한 줄 coding 으로 BoardListResponse 객체를 만들어서 리턴하기
@@ -85,8 +89,8 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public BoardDto getDetail(int num) {
-		return boardDao.getByNum(num);
+	public BoardDto getDetail(BoardDto dto) {
+		return boardDao.getByDto(dto);
 	}
 
 	@Override
@@ -141,12 +145,37 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public void updateContent(BoardDto dto) {
-		boardDao.update(dto);
+		// 글 작성자와 로그인된 userName 이 동일한지 비교해서 다르면 예외 발생시킨다.
+		String writer = boardDao.getByNum(dto.getNum()).getWriter();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(!writer.equals(userName)) {
+			throw new RuntimeException("남의 글은 수정할 수 없어요!");
+		}	
+		int rowCount = boardDao.update(dto);
+		if(rowCount==0) {
+			throw new RuntimeException("글 수정 실패 !");
+		}
 	}
 
 	@Override
 	public void deleteContent(int num) {
-		boardDao.delete(num);
+		// 글 작성자와 로그인된 userName 이 동일한지 비교해서 다르면 예외 발생시킨다.
+		String writer = boardDao.getByNum(num).getWriter();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(!writer.equals(userName)) {
+			throw new RuntimeException("남의 글은 지울 수 없어요!");
+		}	
+		
+		// 삭제된 row 의 갯수를 리턴받는데, 0이 나와 실패하면 예외 발생
+		int rowCount = boardDao.delete(num);
+		if(rowCount==0) {
+			throw new RuntimeException("삭제 실패 !");
+		}
+	}
+
+	@Override
+	public BoardDto getData(int num) {
+		return boardDao.getByNum(num);
 	}
 
 }

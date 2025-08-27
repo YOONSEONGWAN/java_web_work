@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="board">
+	<sql id="search">
+		<choose>
+			<when test="search == 'writer' ">
+				WHERE writer Like '%' || #{keyword} || '%'
+			</when>
+			<when test="search == 'title' ">
+				WHERE title Like '%' || #{keyword} || '%'
+			</when>
+			<when test="search == 'title_content' ">
+				WHERE title Like '%' || #{keyword} || '%' OR content Like '%' || #{keyword} || '%'
+			</when>
+		</choose>
+	</sql>
+
 	<!-- 
 		application.properties 파일에 
 		# type 에 별칭을 붙인 클래스를 찾아서 로딩하기 위해
@@ -17,19 +31,7 @@
 			FROM
 				(SELECT num, writer, title, content, viewCount, createdAt
 				FROM board
-				
-				
-				<choose>
-					<when test="search == 'writer' ">
-						WHERE writer Like '%' || #{keyword} || '%'
-					</when>
-					<when test="search == 'title' ">
-						WHERE title Like '%' || #{keyword} || '%'
-					</when>
-					<when test="search == 'title_content' ">
-						WHERE title Like '%' || #{keyword} || '%' OR content Like '%' || #{keyword} || '%'
-					</when>
-				</choose>
+				<include refid="search"/>
 				ORDER BY num DESC
 				) result1)
 		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum} 
@@ -39,17 +41,7 @@
 	<select id="getCount" parameterType="boardDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0) AS count
 		FROM board
-		<choose>
-			<when test="search == 'writer' ">
-				WHERE writer Like '%' || #{keyword} || '%'
-			</when>
-			<when test="search == 'title' ">
-				WHERE title Like '%' || #{keyword} || '%'
-			</when>
-			<when test="search == 'title_content' ">
-				WHERE title Like '%' || #{keyword} || '%' OR content Like '%' || #{keyword} || '%'
-			</when>
-		</choose>
+		<include refid="search"/>
 	</select>
 	
 	<!-- 
@@ -91,4 +83,18 @@
 		WHERE num=#{num}
 	</update>
 	
+	<select id="getByDto" parameterType="boardDto" resultType="boardDto">
+		SELECT *
+		FROM	
+			(SELECT b.num, writer, title, content, viewCount, 
+				TO_CHAR(b.createdAt, 'YY"년" MM"월" DD"일" HH24:MI') AS createdAt, 
+				profileImage,
+				LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
+				LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
+			FROM board b
+			INNER JOIN users u ON b.writer = u.userName
+		<include refid="search"/>	
+			) 
+		WHERE num=#{num}
+	</select>
 </mapper>

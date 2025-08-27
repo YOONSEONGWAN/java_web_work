@@ -12,7 +12,8 @@ public interface BoardService {
 	public void createContent(BoardDto dto);
 	public void updateContent(BoardDto dto); // 글 수정
 	public void deleteContent(int num); // 글 삭제
-	public BoardDto getDetail(int num);
+	public BoardDto getDetail(BoardDto dto); // 글 자세히 보기를 보여주기 위한 서비스 메소드
+	public BoardDto getData(int num); // 수정할 글 정보를 보여주기 위한 서비스 메소드
 	public List<CommentDto> getComments(int parentNum);
 	public void createComment(CommentDto dto); // 댓글 저장
 	public void updateComment(CommentDto dto); // 댓글 수정

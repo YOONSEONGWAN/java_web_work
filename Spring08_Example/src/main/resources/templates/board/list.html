@@ -33,13 +33,20 @@
 								name="keyword" 
 								class="form-control" 
 								placeholder="검색어 입력..." />
-						<button type="submit" class="btn btn-outline-secondary">검색<i class="bi bi-search"></i></button>
+						<button type="submit" class="btn btn-outline-secondary">
+							<i class="bi bi-search"></i>
+							<span class="visually-hidden">검색</span>	
+						</button>
+						<a class="btn btn-outline-danger" th:href="@{/board/list}">
+							<i class="bi bi-arrow-clockwise"></i>
+							<span class="visually-hidden">새로고침</span>
+						</a>
 					</div>
 				</form>
 				
 			</div>
 		</div>
-		<p th:if="${dto.keyword ne null}" >
+		<p th:if="${dto.keyword ne null and dto.keyword ne ''}" >
 			<strong th:text="${dto.keyword}"></strong>에 대한 검색 결과
 			<strong th:text="${dto.totalRow}"></strong>개
 		</p>
@@ -58,7 +65,7 @@
 					<td th:text="${tmp.num}"></td>
 					<td>[[${tmp.writer}]]</td>
 					<td>
-						<a th:href="@{/board/view(num=${tmp.num})}">
+						<a th:href="@{|/board/view?num=${tmp.num}${dto.query}|}">
 						[[${tmp.title}]]</a>
 					</td>
 					<td th:text="${tmp.viewCount}"></td>
@@ -68,18 +75,25 @@
 		</table>
 		
 		<ul class="pagination">
+			<!--/* 
+				@{'/board/list?pageNum='+${dto.startPageNum-1}+${dto.query}}
+				위와 같이 작성하거나 혹은 문자열을 이어 붙일때는 아래와 같이하면 좀 더 간편
+				파이프문자 사용하면 연잔자나 ' ' 필요 없이 참조하는 문자열이 연결된다.
+				@{|/board/list?pageNum=${dto.startPageNum-1}${dto.query}|}
+			*/-->
 			<li th:if="${dto.startPageNum ne 1}" class="page-item">
-				<a class="page-link" th:href="@{/board/list(pageNum=${dto.startPageNum - 1}, keyword=${dto.keyword})}">&lsaquo;</a>
+				<a class="page-link" th:href="@{|/board/list?pageNum=${dto.startPageNum-1}${dto.query}|}">&lsaquo;</a>
 			</li>
 			<li th:each="i : ${#numbers.sequence(dto.startPageNum, dto.endPageNum)}" class="page-item">
 				<a class="page-link" 
 					th:classappend="${i==dto.pageNum ? 'active' : null} " 
-					th:href="@{/board/list(pageNum=${i}, keyword=${dto.keyword})}">
+					th:href="@{|/board/list?pageNum=${i}${dto.query}|}">
 					[[${i}]]
 				</a>
 			</li>
 			<li th:if="${dto.endPageNum < dto.totalPageCount}" class="page-item">
-				<a class="page-link" th:href="@{/board/list(pageNum=${dto.endPageNum+1}, keyword=${dto.keyword})}">&rsaquo;</a>
+				<a class="page-link" 
+					th:href="@{|/board/list?pageNum=${dto.endPageNum+1}${dto.query}|}">&rsaquo;</a>
 			</li>
 		</ul>
 		

@@ -25,20 +25,35 @@
 		  </ol>
 		</nav>
 		<h1>게시글 상세보기</h1>
+		
+		<p th:if="${message}" class="alert alert-success p-3">[[${message}]]</p>
+		
+		<!--/*  
+			thymeleaf view page 에서 요청 파라미터로 전달되었던 값도 추출할 수 있다.
+			${param.파라미터명}
+			${#strings} 는 문자열에 관련된 유틸리티 객체를 활용할 수 있다.
+			#{!#strings.isEmpty(param.search) }는 search 라는 파라미터명으로 전달된 값이 있는지 확인한다.
+		*/-->
+		<p th:if="${!#strings.isEmpty(param.search)}"
+			class="alert alert-info px-3 py-2 rounded-3 shadow-sm">
+			<strong>[[${param.search}]]</strong>검색 조건 입니다.
+			<strong>[[${param.keyword}]]</strong>검색 결과 입니다.
+		</p>
 		<div class="btn-group mb-2">
 			<a class="btn btn-outline-secondary btn-sm" 
 				th:classappend="${dto.prevNum==0 ? 'disabled' : ''}" 
-				th:href="@{/board/view(num=${dto.prevNum})}">
+				th:href="@{|/board/view?num=${dto.prevNum}${query}|}">
 				<i class="bi bi-arrow-left"></i>
 				Prev
 			</a>
 			<a class="btn btn-outline-secondary btn-sm"
 				th:classappend="${dto.nextNum==0 ? 'disabled' : ''}" 
-				th:href="@{/board/view(num=${dto.nextNum})}">
+				th:href="@{|/board/view?num=${dto.nextNum}${query}|}">
 				Next
 				<i class="bi bi-arrow-right"></i>
 			</a>
 		</div>
+		
 		<table class="table table-striped">
 			<colgroup>
 				<col class="col-2" />
