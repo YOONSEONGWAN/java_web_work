@@ -19,7 +19,6 @@ import com.example.spring08.dto.MemberDto;
 @Mapper
 public interface MemberMapper {
 
-	// <!-- @Alias("memberDto") 로 설정한 type 의 별칭을 사용할 수 있다. -->
 	@Select(""" 
 		SELECT num, name, addr
 		FROM member
@@ -47,6 +46,7 @@ public interface MemberMapper {
 		""")
 		int update(MemberDto dto);
 
+	/*
 	@Insert(""" 
 		INSERT INTO member
 		(num, name, addr)
@@ -55,4 +55,20 @@ public interface MemberMapper {
 	@SelectKey(statement ="SELECT member_seq.NEXTVAL FROM DUAL",
 					keyProperty="num", resultType=int.class, before=true)	
 		public void insert(MemberDto dto);
+	*/
+	
+	// 위 기능은 Mapper xml 문서 활용해서 구현하기
+	
+	/*
+	 *	어노테이션 없이 메소드만 정의하기
+	 * 	
+	 * 	Mapper xml 문서의 namespace="패키지명 포함해서 @mapper 클래스 정의하기"
+	 * 
+	 * 	메소드명이 xml 문서 안에 들어있는 sql 의 id 가 된다.
+	 * 
+	 * 	namespace="com.example.spring08.repository.MemberMapper"
+	 * 
+	 * 	<insert id="insert" parameterType="memberDto"
+	 */
+	public void insert(MemberDto dto);
 }
