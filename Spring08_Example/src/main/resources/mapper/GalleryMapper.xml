@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.spring08.repository.GalleryMapper">
+
+	<!-- GalleryImageDto 맵핑 -->
+	<resultMap id="galleryImageMap" type="com.example.spring08.dto.GalleryImageDto" >
+	
+	</resultMap>
+	<!-- GalleryDto 맵핑 -->
+	<resultMap id="galleryMap" type="com.example.spring08.dto.GalleryDto"></resultMap>
+
+	<select id="getListWithImages">
+		SELECT g.NUM AS g_NUM, g.WRITER, g.TITLE, g.content, 
+			   TO_CHAR(g.createdAt, 'YYYY-MM-DD HH24:MI:SS') AS g_createdAt,
+			   GI.GALLERYNUM, GI.NUM AS GI_NUM, GI.SAVEFILENAME,
+			   TO_CHAR(gi.createdAt, 'YYYY-MM-DD HH24:MI:SS') AS gi_createdAt
+		FROM GALLERY g
+		JOIN GALLERY_IMAGE GI ON G.NUM = GI.GALLERYNUM
+		ORDER BY g.NUM DESC, gi.num ASC; 
+	</select>
+</mapper>
