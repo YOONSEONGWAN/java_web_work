@@ -8,6 +8,17 @@
 </head>
 <body>
 	<div class="container">
+		<nav>
+		  <ol class="breadcrumb">
+		    <li class="breadcrumb-item">
+		    	<a th:href="@{/}">Home</a>
+		    </li>
+		    <li class="breadcrumb-item">
+		    	<a th:href="@{/gallery/list}">gallery</a>
+		    </li>
+		    <li class="breadcrumb-item active">Detail</li>
+		  </ol>
+		</nav>
 		<div class="card shadow">
 			<!-- 작성자 정보 -->
 			<div class="card-header d-flex align-items-center">
@@ -37,110 +48,5 @@
 		<th:block th:insert="~{include/comment :: commentUi('gallery', ${res.dto.num}, ${res.dto.writer}, ${res.commentList})}"></th:block>
 		
 	</div><!-- .container -->
-	<script>
-		// 클라이언트가 로그인 했는지 여부
-		const isLogin = [[${res.isLogin}]];
-		
-		// 대댓글 보기 버튼을 눌렀을 때 실행할 함수 등록  
-    	document.querySelectorAll(".dropdown-btn").forEach(item => {
-     		  item.addEventListener("click", (e) => {
-     			// click 이벤트가 발생한 버튼의 자손 요소 중에서  caret up, caret down 요소를 찾는다. 
-     			const caret = item.querySelector(".bi-caret-up, .bi-caret-down");
-     			// caret 모양을 위아래로 토글시킴. if 문 없어도 동작함
-     			if (caret) {
-     			  caret.classList.toggle("bi-caret-down");
-     			  caret.classList.toggle("bi-caret-up");
-     			}
-     			
-     		    // 1. 버튼(item)의 두 단계 부모 요소로 이동 (-> 카드를 가르킴 )
-     		    const grandParent = item.parentElement.parentElement;
-				// 2. 두 단계 부모요소의 바로 다음 형제 요소의 참조값을 얻어낸다.
-     		 	let next = grandParent.nextElementSibling;
-				// 3. 반복문을 통해
-  	   			while (next) {
-  	   				// re-re 클래스가 존재한다면 
-	  	   		    if (next.classList.contains("re-re")) {
-	  	   		    	// d-block 클래스를 토글시켜서 보였다 숨겼다 반복 
-			   		    next.classList.toggle("d-block");
-	  	   		    }else{// 존재하지 않으면 반복문 탈출
-	  	   		    	break;
-	  	   		    }
-  	   				// 그리고 그 다음 형제요소의 참조값을 얻어내서 계속 수행 
-	  	   		 	next = next.nextElementSibling;
-  	   				
-	  	   		}
-     		  });
-      	});
-		
-		// class 명이 edit-btn인 모든 버튼에 click 이벤트 리스너 등록
-        document.querySelectorAll(".edit-btn").forEach( item => {
-            item.addEventListener("click", ()=>{
-                // 클릭한 버튼의 다음 형제요소의 class 목록에서 d-none 제거
-                item.nextElementSibling.classList.remove("d-none");
-                // 클릭한 버튼의 class 목록에 d-none 추가
-                item.classList.add("d-none");
-            });
-        });
-        // 취소 버튼을 눌렀을 때 이벤트 리스너 등록 
-        document.querySelectorAll(".cancel-edit-btn").forEach(item=>{
-            item.addEventListener("click", ()=>{
-                // 가장 가까운 부모요소 중 .form-div 요소
-                const formDiv=item.closest(".form-div");
-                // formDiv 에 d-none 클래스 추가해서 안 보이게 하고
-                formDiv.classList.add("d-none");
-                // formDiv 의 이전 형제요소(댓글버튼)의 d-none 제거
-                formDiv.previousElementSibling.classList.remove("d-none");
-            });
-        });
-        // 삭제 버튼을 눌렀을 때
-        document.querySelectorAll(".btn-close").forEach(item=>{
-            item.addEventListener("click", ()=>{
-                // data-num 속성에 출력된 삭제할 댓글의 번호 attribute에는 속성값이 다 있다.
-                const num=item.getAttribute("data-num");
-                const isDelete=confirm(num+"번 댓글을 삭제 하시겠습니까?")
-                if(isDelete){ //true 일때 삭제, false일때 취소
-					// 댓글 삭제 링크 
-                	location.href=`[[@{/gallery/comment-delete}]]?num=${num}&parentNum=[[${res.dto.num}]]`;
-                }
-            });
-        })
-		
-		document.querySelector("#commentContent").addEventListener("input", ()=>{
-			// 원글의 댓글 입력란에 포커스가 왔을 때 만일 로그인 하지 않았다면
-			if(!isLogin){
-				alert("댓글 작성을 위해 로그인이 필요합니다!");
-    			location.href= 
-    				"[[@{/user/loginform}]]?url=[[@{/gallery/view(num=${res.dto.num})}]]";
-    		}
-		});
-		
-        // 모든 댓글 버튼에 이벤트 등록 [버튼참조1, 버튼참조2, ...]
-        document.querySelectorAll(".show-reply-btn").forEach(item=>{
-            // 매개변수에 전달된 item 은 댓글 button 의 참조값이다.
-            item.addEventListener("click", ()=>{ 
-            	// 댓글 버튼을 눌렀을 때 만일 로그인 하지 않았다면
-    			if(!isLogin){
-    				alert("댓글 작성을 위해 로그인이 필요합니다!");
-    				location.href = "[[@{/user/loginform}]]?url=[[@{/gallery/view(num=${res.dto.num})}]]";
-        			return; // 리턴으로 아래 폼 안 열리게 하기
-    			}
-                // 클릭한 버튼의 다음 형제요소의 class 목록에서 d-none 제거
-                item.nextElementSibling.classList.remove("d-none");
-                // 클릭한 버튼의 class 목록에 d-none 을 추가
-                item.classList.add("d-none")
-            });
-        });
-        // 취소를 누르면 댓글폼이 닫히도록 하기
-        document.querySelectorAll(".cancel-reply-btn").forEach(item=>{
-            item.addEventListener("click", ()=>{
-                // 가장 가까운 부모요소 중 .form-div 요소
-                const formDiv=item.closest(".form-div");
-                // formDiv 에 d-none 클래스 추가해서 안 보이게 하고
-                formDiv.classList.add("d-none");
-                // formDiv 의 이전 형제요소(댓글버튼)의 d-none 제거
-                formDiv.previousElementSibling.classList.remove("d-none");
-            });
-        });
-    </script>
 </body>
 </html>
