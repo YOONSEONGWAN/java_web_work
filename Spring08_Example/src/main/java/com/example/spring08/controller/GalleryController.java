@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.spring08.dto.GalleryUploadRequest;
+import com.example.spring08.dto.GalleryViewResponse;
 import com.example.spring08.service.GalleryService;
 
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,25 @@ import lombok.RequiredArgsConstructor;
 public class GalleryController {
 	
 	private final GalleryService galleryService;
+	
+	
+	
+	@GetMapping("/gallery/view")
+	public String galleryView(int num, Model model) {
+		
+		GalleryViewResponse response = galleryService.getGallery(num);
+		model.addAttribute("res", response);
+		
+		return "gallery/view";
+	}
 
 	@PostMapping("/gallery/save")
-	public String gallerySave(GalleryUploadRequest uploasdRequest) {
+	public String gallerySave(GalleryUploadRequest uploadRequest) { // title, content, images 가 넘어옴
 		// 업로드된 파일의 모든 정보를 GalleryUploadRequest 의 images 라는 MultipartFile[] 객체에 담아서
 		// 전달해준다
+		galleryService.createGallery(uploadRequest);
 		
-		return "gallery/save";
+		return "redirect:/gallery/list";
 	}
 	
 	@GetMapping("/gallery/new-form")

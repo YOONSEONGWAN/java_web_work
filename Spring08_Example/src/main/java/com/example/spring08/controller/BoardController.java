@@ -3,10 +3,12 @@ package com.example.spring08.controller;
 import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,14 +17,19 @@ import com.example.spring08.dto.BoardDto;
 import com.example.spring08.dto.BoardListResponse;
 import com.example.spring08.dto.CommentDto;
 import com.example.spring08.service.BoardService;
+import com.example.spring08.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
 public class BoardController {
+
+    private final PasswordEncoder passwordEncoder;
 	
 	private final BoardService service;
+	private final CommentService commentService;
+
 	
 	@PostMapping("/board/update")
 	public String boardUpdate(BoardDto dto, RedirectAttributes ra) {
@@ -51,30 +58,6 @@ public class BoardController {
 	    return "board/delete";
 	}
 	
-	@PostMapping("/board/comment-update")
-	public String commentUpdate(CommentDto dto) {
-		
-		service.updateComment(dto);
-		
-		return "redirect:/board/view?num=" + dto.getParentNum();
-	}
-	
-	@GetMapping("/board/comment-delete")
-	public String commentDelete(CommentDto dto) {
-		// dto 에는 삭제할 댓글의 글번호와 원글의 글번호가 들어있다 (num, parentNum)
-		service.deleteComment(dto.getNum());
-		
-		return "redirect:/board/view?num=" + dto.getParentNum();
-	}
-	
-	@PostMapping("/board/save-comment")
-	public String commentSave(@ModelAttribute CommentDto comment) { 
-		// dto 에 담겨오는 것 : parentNum,targetWriter, content, groupNum(댓글의 댓글)
-		service.createComment(comment);
-		// 댓글을 작성한 원글 자세히 보기로 리다일렉트 
-		return "redirect:/board/view?num=" + comment.getParentNum();
-	}
-	
 	@GetMapping("/board/view")
 	public String boardView(BoardDto requestDto,  Model model) {
 		/*
@@ -95,7 +78,7 @@ public class BoardController {
 		model.addAttribute("query", query);
 		
 		// 댓글 목록은 원글의 글번호를 전달해서 얻어낸다
-		List<CommentDto> comments=service.getComments(requestDto.getNum());
+		List<CommentDto> comments=commentService.getComments(requestDto.getNum());
 		// model 객체에 담고
 		model.addAttribute("dto", dto);
 		model.addAttribute("commentList", comments);

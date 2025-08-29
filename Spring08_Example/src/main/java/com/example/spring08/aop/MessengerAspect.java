@@ -33,7 +33,7 @@ public class MessengerAspect {
 		return "뭔 공부여;; 놀자"; // 다른 값을 리턴해줄 수도 있다.
 	}
 	
-	//  .. 은 매개변수의 갯수와 type 을 상관하지 않음
+	//  1 .. 은 매개변수의 갯수와 type 을 상관하지 않음
 	// spring 이 관리하는 bean 의 메소드 중에서 리턴 type 이 void 이고 send 로 시작하는 모든 메소드에 적용된다. 
 	@Around("execution(void send*(..))") // @Before + @After 개념, 매개변수에 아무것도 없는 상태라면. -> 비어있으면 매개변수가 있는 메소드에는 적용이 안된다. 
 	public void checkGreeting(ProceedingJoinPoint joinPoint) throws Throwable {
