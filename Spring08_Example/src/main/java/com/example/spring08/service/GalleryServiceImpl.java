@@ -123,78 +123,10 @@ public class GalleryServiceImpl implements GalleryService {
 		List<CommentDto> commentList=commentDao.selectList(num);	
 		
 		return GalleryViewResponse.builder()
-				.userName(userName)
-				.isLogin(isLogin)
 				.dto(dto)
 				.images(images)
 				.commentList(commentList)
 				.build();
 	}
 	
-	@Override
-	public List<GalleryDto> getListWithImages() {
-		mapper.getListWithImages();
-		return null;
-	}
-
-	@Override
-	public GalleryDto getData(int num) {
-		mapper.getData(num);
-		return null;
-	}
-
-	@Override
-	public List<GalleryImageDto> getImageList(int galleryNum) {
-		mapper.getImageList(galleryNum);
-		return null;
-	}
-
-	@Override
-	public int saveContent(GalleryDto dto) {
-		mapper.insert(dto);
-		return 0;
-	}
-
-	@Override
-	public void saveContentWithImages(GalleryDto dto, List<GalleryImageDto> images) {
-//		// 이미지 먼저 저장
-//		mapper.insertImage(null);
-//		
-//		mapper.insert(dto);
-//		int gNum=dto.getNum();
-//		
-//		for (GalleryDto img : images) {
-//			mapper.insertImage(img.getNum());
-//			dto.setImageList(images);
-//		}
-//		mapper.insertImage(null);
-		
-	}
-
-	@Override
-	public void addImages(int galleryNum, List<GalleryImageDto> images) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateContent(GalleryDto dto) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteImage(int imageNum) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteContent(int num) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-
 }

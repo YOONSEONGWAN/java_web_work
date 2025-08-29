@@ -129,11 +129,7 @@
 		  	   		    if (next.classList.contains("re-re")) {
 		  	   		    	// d-block 클래스를 토글시켜서 보였다 숨겼다 반복 
 		  	   		    	next.classList.toggle("d-none");
-		  	   		    	//next.classList.remove("d-block");
-				   		    //next.classList.add("d-none");
 		  	   		    }else{// 존재하지 않으면 반복문 탈출
-				  	   		//next.classList.add("d-block");
-					   		//next.classList.remove("d-none");
 		  	   		    	break;
 		  	   		    }
 	  	   				// 그리고 그 다음 형제요소의 참조값을 얻어내서 계속 수행 
@@ -171,7 +167,7 @@
 	                const isDelete=confirm(num+"번 댓글을 삭제 하시겠습니까?")
 	                if(isDelete){ //true 일때 삭제, false일때 취소
 						// 댓글 삭제 링크 
-	                	location.href=`[[@{|/${category}/comment-delete}|]]?num=${num}&parentNum=[[${parentNum}]]`;
+	                	location.href=`[[@{|/${category}/comment-delete|}]]?num=${num}&parentNum=[[${parentNum}]]`;
 	                }
 	            });
 	        })

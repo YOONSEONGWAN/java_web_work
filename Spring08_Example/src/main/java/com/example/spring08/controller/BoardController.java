@@ -82,13 +82,6 @@ public class BoardController {
 		// model 객체에 담고
 		model.addAttribute("dto", dto);
 		model.addAttribute("commentList", comments);
-		// 로그인된 유저네임 얻어내기 
-		// 로그인을 안 했으면 "annonymousUser"가 리턴된다.)
-		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-		boolean isLogin =userName.equals("anonymousUser")? false : true;
-		// 위의 추가 정보도 모델 객체에 담는다.
-		model.addAttribute("userName", userName);
-		model.addAttribute("isLogin", isLogin);
 		
 		// 타임리프 페이지에서 응답
 		return "board/view";
