@@ -14,12 +14,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class GalleryServiceImpl implements GalleryService {
 
+	// 의존객체를 생성자로 주입받기
 	private final GalleryMapper mapper;
 	
 	@Override
-	public List<GalleryDto> getList() {
-		mapper.getList();
-		return null;
+	public List<GalleryDto> getGalleryList() {
+		
+		return mapper.getListWithImages();
 	}
 
 	@Override

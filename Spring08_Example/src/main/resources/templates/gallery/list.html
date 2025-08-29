@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/gallery/list.html</title>
+<th:block th:insert="~{/include/resource :: bootstrap}"></th:block>
+<!-- 벽돌 형태의 레이아웃을 구성하기 위한 masonry javascript 로딩 -->
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+<script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+</head>
+<body>
+		<th:block th:insert="/include/navbar :: nav('gallery')"></th:block>
+	</jsp:include>
+	<div class="container">
+		<a class="btn btn-outline-primary btn-sm mt-2" th:href="@{/gallery/new-form}">
+	       <i class="bi bi-image"></i> 
+	       <i class="bi bi-plus"></i>
+	       <span class="visually-hidden">갤러리 새글 작성</span> <!-- 시각적으로 안보이게 숨겨놓기(웹 접근성) -->
+	    </a>
+		<h1>Gallery 목록</h1>
+		<div class="row" id="masonry-grid">
+			<div th:each="tmp :${list}" class="col-sm-6 col-md-4 col-lg-3 mb-4" >
+				<div class="card" th:if="${tmp}">
+					<img class="card-img-top" 
+							th:src="@{/upload/{name}(name=${tmp.imageList[0].saveFileName})}" />
+					<div class="card-body">
+						<h4>[[${tmp.title}]]</h4>
+						<a class="btn btn-sm btn-success" 
+							th:href="@{/gallery/view(num=${tmp.num})}">
+							[[${#lists.size(tmp.imageList)}]] 개의 이미지 
+							<!--/* [[${tmp.imageList.size()}]] 개의 이미지 */-->
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	 	// masinry layout 을 초기화하는 javascript
+		const grid = document.querySelector("#masonry-grid");
+		imagesLoaded(grid, ()=>{
+			new Masonry(grid, { percentPosition:true});
+		});
+	</script>
+</body>
+</html>

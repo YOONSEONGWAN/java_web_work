@@ -31,7 +31,8 @@ public class SecurityConfig {
 		// security 를 통과하는 white list 설정
 		String [] whiteList = {"/", "/user/loginform", "/user/login-fail", 
 							 "/user/expired", "/user/signup-form", "/user/signup", 
-							 "/test/**", "/user/check-id", "/board/list", "board/view", "/upload/**"};
+							 "/test/**", "/user/check-id", "/board/list", "/board/view", "/upload/**",
+							 "/gallery/list", "gallery/view"};
 		
 		// 下.함수식. 화살표 다음에 있는 코드들은 리턴할 값을 의미 
 		

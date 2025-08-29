@@ -2,20 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.spring08.repository.GalleryMapper">
 
-	<!-- GalleryImageDto 맵핑 -->
+	<!-- 
+		GalleryImageDto 맵핑
+		
+		property="Dto 의 필드명" column="SELECT 된 칼럼명" 두 개를 매치시켜줌
+		ex) 
+		property="num" column="gi_num"
+		GalleryImageDto 객체의 setNum() 메소드를 호출하면서 SELECT 된 gi_num 을 전달하라는 의미
+		
+		property 필드에 column(+별칭) 을 넣어달라
+		PK는 id 로 맵핑하고 나머지는 result 로 맵핑한다. id가 있어야 컬렉션에 넣을 수 있음
+		
+	-->
 	<resultMap id="galleryImageMap" type="com.example.spring08.dto.GalleryImageDto" >
-	
+		<id property="num" column="gi_num"/>
+		<result property="galleryNum" column="galleryNum"/>
+		<result property="saveFileName" column="saveFileName"/>
+		<result property="createdAt" column="gi_createdAt"/>
 	</resultMap>
-	<!-- GalleryDto 맵핑 -->
-	<resultMap id="galleryMap" type="com.example.spring08.dto.GalleryDto"></resultMap>
+	
+	<!-- 
+		GalleryDto 맵핑 
+		
+		GalleryDto 의 imageList 필드는 List<GalleryImageDto> type 이기 때문에
+		collection 요소를 이용해서 galleryImageMap 의 결과를 넣도록 설정한다.
+	-->
+	<resultMap id="galleryMap" type="com.example.spring08.dto.GalleryDto">
+		<id property="num" column="g_num"/>
+		<result property="writer" column="writer"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="createdAt" column="g_createdAt"/>
+		<collection property="imageList" resultMap="galleryImageMap"/>
+	</resultMap>
 
-	<select id="getListWithImages">
+	<select id="getListWithImages" resultMap="galleryMap">
 		SELECT g.NUM AS g_NUM, g.WRITER, g.TITLE, g.content, 
 			   TO_CHAR(g.createdAt, 'YYYY-MM-DD HH24:MI:SS') AS g_createdAt,
 			   GI.GALLERYNUM, GI.NUM AS GI_NUM, GI.SAVEFILENAME,
 			   TO_CHAR(gi.createdAt, 'YYYY-MM-DD HH24:MI:SS') AS gi_createdAt
 		FROM GALLERY g
 		JOIN GALLERY_IMAGE GI ON G.NUM = GI.GALLERYNUM
-		ORDER BY g.NUM DESC, gi.num ASC; 
+		ORDER BY g.NUM DESC, gi.num ASC 
 	</select>
 </mapper>
