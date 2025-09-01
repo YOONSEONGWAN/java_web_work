@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/templates/book/list.html</title>
+</head>
+<body>
+	<div class="container">
+		<a th:href="@{/book/new-form}">책 추가하기</a>
+		<h1>타임리프 책 목록입니다.</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>이름</th>
+					<th>저자</th>
+					<th>출판사</th>
+					<th>수정</th>
+					<th>삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="tmp : ${list}">
+					<td>[[${tmp.id}]]</td>
+					<td>[[${tmp.name}]]</td>
+					<td th:text="${tmp.author}"></td>
+					<td th:text="${tmp.publisher}"></td>
+					<td><a th:href="@{/book/edit(id=${tmp.id})}">수정하기</a></td>
+					<td><a th:href="@{/book/delete(id=${tmp.id})}">삭제하기</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
