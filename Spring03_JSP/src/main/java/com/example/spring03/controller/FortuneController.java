@@ -31,7 +31,7 @@ public class FortuneController {
 	 * 	Model 객체도 컨트롤러 메소드의 매개변수에 선언만 하면 자동으로 spring 이 전달해준다.
 	 */
 	
-	@GetMapping("/fortune2")
+	@GetMapping("/fortune")
 	public String fortune2(Model model) { // model 인터페이스
 		String fortuneToday = "동쪽으로 가면 귀인을 만나요~!";
 		// Model 객체에 담으면 자동으로 HttpServlet 객체에 담긴다.

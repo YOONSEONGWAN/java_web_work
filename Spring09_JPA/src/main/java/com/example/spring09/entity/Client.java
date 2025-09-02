@@ -11,7 +11,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 @Entity // 테이블명을 지정하지 않으면 클래스명과 동일하게 테이블이 만들어진다.
 public class Client {
 	// 고객번호

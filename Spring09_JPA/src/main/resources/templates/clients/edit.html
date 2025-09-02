@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>templates/clients/edit.html</title>
+</head>
+<body>
+	<div class="container">
+		<h2>생일 수정 폼</h2>
+		<form th:action="@{/clients/${num}}" method="post">
+			<input type="hidden" name="num" th:value="${dto.num}" />
+			<div>
+				<label for="birthday">생일</label>
+				<input type="date" name="birthday" id="birthday" />
+			</div>
+			<button type="submit">저장</button>
+		</form>
+	</div>
+</body>
+</html>

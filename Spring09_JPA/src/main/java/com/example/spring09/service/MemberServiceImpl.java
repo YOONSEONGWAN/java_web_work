@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.example.spring09.dto.MemberDto;
 import com.example.spring09.entity.Member;
 import com.example.spring09.repository.MemberRepository;
@@ -21,9 +20,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor // lombok 이 생성자를 자동으로 만들어준다.
 public class MemberServiceImpl implements MemberService{
+
+   
 	
 	// JPA Repository 객체를 주입 받는다.
 	private final MemberRepository memberRepo;
+
+    
 	
 	// select 전용 메소드는 @Transactional(readOnly=true) 를 붙이면 안전하다.
 	// 의도치 않은 수정, 삭제 방지 위해서
@@ -100,7 +103,7 @@ public class MemberServiceImpl implements MemberService{
 		 * 	- Entity 의 id 필드에 해당하는 정보가 DB 에 없으면 insert.
 		 * 	- Entity 의 id 필드에 해당하는 정보가 DB 에 있거나 존재하면 update 된다.	
 		 */
-		memberRepo.save(Member.toEntity(dto));
+		memberRepo.save(dto.toEntity());
 	}
 	
 	/*

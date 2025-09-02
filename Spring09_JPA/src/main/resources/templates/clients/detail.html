@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/clients/detail.html</title>
+</head>
+<body>
+	<div class="container">
+		<h2>자세히보기</h2>
+		<p>num: <span th:text="${client.num}"></span></p>
+		<p>userName: <span th:text="${client.userName}"></span></p>
+		<p>createdAt: <span th:text="${client.createdAt}"></span></p>
+		<p>updatedAt: <span th:text="${client.updatedAt}"></span></p>
+		<p>birthday: <span th:text="${client.birthday}"></span></p>
+	</div>
+	
+	<a th:href="@{/clients}">목록으로</a>
+</body>
+</html>

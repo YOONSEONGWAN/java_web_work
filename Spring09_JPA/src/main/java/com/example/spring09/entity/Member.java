@@ -28,21 +28,4 @@ public class Member {
 	private String name;
 	private String addr;
 		
-	// dto 를 매개변수로 전달하면, Entity 를 리턴하는 static 메소드를 만들기
-	public static Member toEntity(MemberDto dto) {
-		
-		/*
-		 * 	Member entity 의 num 이라는 필드에 값이 null 이어야지
-		 * 
-		 * 	.save() 할 때 새로운 row 가 추가된다.
-		 * 
-		 * 	따라서 dto 에 num 이 0이면 0을 넣는 것이 아니고 null 을 넣어 주어야 우리가 의도한 .save() 가 동작함
-		 */
-		
-		return Member.builder()
-				.num(dto.getNum() == 0 ? null : dto.getNum())
-				.name(dto.getName())
-				.addr(dto.getAddr())
-				.build();
-	}
 }

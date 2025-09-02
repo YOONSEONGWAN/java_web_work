@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.spring09.entity.Book;
+import com.example.spring09.entity.Client;
 import com.example.spring09.entity.Member;
 import com.example.spring09.repository.BookRepository;
 import com.example.spring09.repository.MemberRepository;
@@ -73,11 +74,20 @@ public class Spring09JpaApplication {
 			Member m1=Member.builder().name("김구라").addr("노량진").build();
 			Member m2=Member.builder().name("해골").addr("행신동").build();
 			Member m3=Member.builder().name("원숭이").addr("동물원").build();
+			// Client Sample data 입력
+			Client c1=Client.builder().userName("김구라").build();
+			Client c2=Client.builder().userName("해골").build();
+			Client c3=Client.builder().userName("원숭이").build();
+			
+			
 			// EntityManager 객체의 prtsist() 메소드를 이용해 객체에 저장된 정보를 
 			// 영구저장 할 수 있다. 
 			em.persist(m1);
 			em.persist(m2);
 			em.persist(m3);
+			em.persist(c1);
+			em.persist(c2);
+			em.persist(c3);
 			tx.commit(); // commit 하는 시점에 저장
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/include/nav.html</title>
+</head>
+<body>
+	<nav th:fragment="nav(thisPage)" class="navbar navbar-expand-md bg-success" data-bs-theme="dark">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/}">Acorn</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav me-auto">
+					<li class="nav-item">
+						<a class="nav-link" 
+							th:classappend="${thisPage == 'member' ? 'active' : null}" 
+							th:href="@{/member/list}">Member</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" 
+							th:classappend=" ${thisPage== 'book'  ? 'active': null}" 
+							th:href="@{/book/list}">Book</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link"
+							th:classappend="${thisPage == 'board' ? 'active': null}" 
+							th:href="@{/board/list}">Board</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" 
+							th:classappend="${thisPage == 'gallery' ? 'active': null}" 
+							th:href="@{/gallery/list}">Gallery</a>
+					</li>
+				</ul>
+	             <!-- 오른쪽 사용자 메뉴 -->
+	            <ul class="navbar-nav">
+	            	<!--/* 로그인 했을 때 출력할 내용 */-->
+	            	<th:block sec:authorize="isAuthenticated()" >
+	           			<li class="nav-item  me-2">
+							<a class="nav-link  p-0"
+						       	th:href="@{/user/info}">
+								<strong sec:authentication="name" ></strong>
+							</a>
+						</li>
+		                <li class="nav-item me-2">
+		                    <span class="navbar-text">Signed in</span>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="btn btn-danger btn-sm"
+		                       	th:href="@{/user/logout}">로그아웃</a>
+		                </li>
+	            	</th:block>
+	            	<!--/* 로그인 안 했을 때 출력할 내용 */-->
+	            	<th:block sec:authorize="!isAuthenticated()" >
+						<li class="nav-item">
+					    	<a class="btn btn-outline-light btn-sm me-2"
+					        	th:href="@{/user/loginform}">로그인</a>
+						</li>
+					    <li class="nav-item">
+					    	<a class="btn btn-warning btn-sm"
+					        	th:href="@{/user/signup-form}">회원가입</a>
+					    </li>
+            		</th:block>
+                </ul>
+			</div>
+		</div>
+	</nav>
+</body>
+</html>
