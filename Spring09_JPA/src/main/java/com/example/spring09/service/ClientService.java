@@ -16,9 +16,12 @@ public interface ClientService {
 	List<ClientDto> getClients();
 	
 	/** 개인정보 수정 페이지용: 단건 조회 */
-	ClientDto getCliendt(Long num);
+	ClientDto getClient(Long num);
 	
 	/** 생일 입력/수정 개인정보 수정 */
 	void updateBirthday(Long num, LocalDate birthday);
+	
+	/** 개인정보 수정 */
+	void updateClient(ClientDto dto);
 
 }

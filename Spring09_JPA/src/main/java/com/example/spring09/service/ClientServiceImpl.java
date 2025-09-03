@@ -43,7 +43,7 @@ public class ClientServiceImpl implements ClientService {
 	// Client 한 명의 정보 조회
 	@Transactional(readOnly = true)
 	@Override
-	public ClientDto getCliendt(Long num) {
+	public ClientDto getClient(Long num) {
 		// Client entity=clientRepo.findById(num).get(); // 예외 없이 사용
 		Client entity=clientRepo.findById(num)
 				.orElseThrow(()-> new IllegalArgumentException("회원이 존재하지 않아요 ; ; num="+num));
@@ -59,6 +59,19 @@ public class ClientServiceImpl implements ClientService {
 		entity.setBirthday(birthday); // entity 를 수정하는 것 만으로 자동으로 반영된다. 
 		
 	}
+
+	@Transactional
+	@Override
+	public void updateClient(ClientDto dto) {
+		Client entity = clientRepo.findById(dto.getNum())
+				.orElseThrow(()-> new IllegalArgumentException("수정할 회원이 존재하지 않아요 ; ; "));
+		entity.setUserName(dto.getUserName());
+		entity.setBirthday(dto.getBirthday());
+		
+		
+	}
+
+	
 	
 	
 

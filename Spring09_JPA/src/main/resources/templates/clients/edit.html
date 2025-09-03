@@ -3,17 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>templates/clients/edit.html</title>
+<th:block th:insert="~{/include/resource :: bootstrap}"></th:block>
 </head>
 <body>
-	<div class="container">
+	<div class="container" th:object="${client}">
 		<h2>생일 수정 폼</h2>
-		<form th:action="@{/clients/${num}}" method="post">
-			<input type="hidden" name="num" th:value="${dto.num}" />
-			<div>
-				<label for="birthday">생일</label>
-				<input type="date" name="birthday" id="birthday" />
+		<form th:action="@{|/clients/*{num}|}" method="post">
+			<input type="hidden" th:value="*{num}" />
+			<div class="mb-3">
+				<label class="form-label" for="userName">이름</label>
+				<input class="form-control" type="text" th:field="*{userName}" />
+				<small class="text-danger"
+					th:if="${#fields.hasErrors('userName')}"
+					th:errors="*{userName}">에러</small>
 			</div>
-			<button type="submit">저장</button>
+			<div class="mb-3">
+				<label class="form-label" for="birthday">생일</label>
+				<input class="form-control" type="date" th:field="*{birthday}"/>
+				<small class="text-danger"
+					th:if="${#fields.hasErrors('birthday')}"
+					th:errors="*{birthday}">에러</small>
+			</div>
+			<button class="btn btn-primary" type="submit">저장</button>
+			<button class="btn btn-secondary" type="reset">취소</button>
 		</form>
 	</div>
 </body>

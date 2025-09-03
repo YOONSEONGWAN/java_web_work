@@ -67,7 +67,7 @@ public class ClientController {
 	// 상세 보기 
 	@GetMapping("/clients/{num}")
 	public String viewClients(@PathVariable("num") Long num, Model model) {
-		ClientDto dto=clientService.getCliendt(num);
+		ClientDto dto=clientService.getClient(num);
 	
 		model.addAttribute("client", dto);
 		
@@ -101,7 +101,7 @@ public class ClientController {
 	 * 
 	 * 	@Valid 로 검증을 한 dto 매개변수 선언 바로 뒤에 BindingResult 매개변수를 선언해야 한다.
 	 */
-	@PostMapping("/clients")
+	@PostMapping("/clients") 
 	public String create(@Valid ClientDto dto, BindingResult br, RedirectAttributes ra) {
 		// 폼 입력 내용중에 에러가 있는지 (검증조건을 통과하지 못했는지) 여부를 알아내서
 		boolean hasError=br.hasErrors();
@@ -130,6 +130,8 @@ public class ClientController {
 		Long num = clientService.addClient(dto);
 		
 		ra.addFlashAttribute("msg", "저장 완료!");
+		//고객정보를 성공적으로 저장했다는 메시지를 띄우기 위한 RedirectAttribute
+		ra.addFlashAttribute("message", dto.getUserName()+" 님의 정보를 저장했습니다");
 		// 고객 정보 자세히 보기로 리다일렉트
 		return "redirect:/clients/" + num;
 	}
@@ -137,18 +139,32 @@ public class ClientController {
 	// birthday update form
 	@GetMapping("/clients/{num}/edit")
 	public String updateForm(@PathVariable("num") Long num, Model model) {
-		ClientDto dto=clientService.getCliendt(num);
-		model.addAttribute("dto", dto);
+		// 수정 반영할 때 RedirectAttribute 정보를 가져올 수도 있다.
+		if(!model.containsAttribute("client")) {
+			model.addAttribute("client", clientService.getClient(num));
+		}
+		//ClientDto dto=clientService.getClient(num);
+		//model.addAttribute("dto", dto);
 		
 		return "clients/edit";
 	}
 	
 	// birthday update
 	@PostMapping("/clients/{num}")
-	public String update(Long num, LocalDate birthday) {
-		clientService.updateBirthday(num, birthday);
-		
-		return "redirect:/clients";
+	public String update(@PathVariable Long num, LocalDate birthday, 
+			@Valid ClientDto dto, BindingResult br, RedirectAttributes ra   ) {
+		// 폼 입력 내용중에 에러가 있는지 (검증조건을 통과하지 못했는지) 여부를 알아내서
+		boolean hasError=br.hasErrors();
+		// 만약 에러가 있다면 다시 폼으로 리다일렉팅 
+		if(hasError) {
+			ra.addFlashAttribute("client", dto);
+			ra.addFlashAttribute("org.springframework.validation.BindingResult.client", br);
+			
+			return "redirect:/clients/"+num+"/edit";
+		}
+		clientService.updateClient(dto);
+		ra.addFlashAttribute("message", dto.getUserName()+" 님의 정보를 수정했습니다");
+		return "redirect:/clients/"+num;
 	}
 	
 }
