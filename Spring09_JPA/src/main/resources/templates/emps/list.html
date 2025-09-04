@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>/templates/emps/list.html</title>
+<th:block th:insert="~{/include/resource :: bootstrap}"></th:block>
+</head>
+<body>
+	<div class="container">
+		<h1>사원 목록입니다.</h1>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>사원번호</th>
+					<th>사원이름</th>
+					<th>직책</th>
+					<th>자세히</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="tmp :${empList}">
+					<td th:text="${tmp.empno}"></td>
+					<td th:text="${tmp.ename}"></td>
+					<td th:text="${tmp.job}"></td>
+					<td>
+						<a th:href="@{|emps/${tmp.empno}|}">보기</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.example.spring09;
 
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +11,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.spring09.entity.Book;
 import com.example.spring09.entity.Client;
+import com.example.spring09.entity.Dept;
+import com.example.spring09.entity.Emp;
 import com.example.spring09.entity.Member;
 import com.example.spring09.repository.BookRepository;
+import com.example.spring09.repository.DeptRepository;
+import com.example.spring09.repository.EmpRepository;
 import com.example.spring09.repository.MemberRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -33,6 +39,12 @@ public class Spring09JpaApplication {
 	
 	@Autowired
 	BookRepository bookRepo;
+	
+	@Autowired
+	EmpRepository empRepo;
+	
+	@Autowired
+	DeptRepository deptRepo;
 	
 	@PostConstruct
 	public void bookJPA() {
@@ -115,6 +127,59 @@ public class Spring09JpaApplication {
 		List<Member> list= memberRepo.findAll();
 		for(Member tmp : list) {
 			System.out.println(tmp.getNum() +"| "+ tmp.getName() +" | "+ tmp.getAddr());
+		}
+		
+		// 부서 정보를 저장하기 (select 전에 해야함)
+		Dept d10 = new Dept(10, "ACCOUNTING", "NEW YORK");
+		Dept d20 = Dept.builder().deptno(20).dname("RESEARCH").loc("DALLAS").build();
+		Dept d30 = Dept.builder().deptno(30).dname("SALES").loc("CHICAGO").build();
+		Dept d40 = new Dept(40, "OPERATIONS", "BOSTON");
+		
+		/*
+		deptRepo.save(d10);
+		deptRepo.save(d20);
+		deptRepo.save(d30);
+		deptRepo.save(d40);
+		*/
+		
+		deptRepo.saveAll(List.of(d10, d20, d30, d40));
+		
+		// 날짜 형식을 지정해주고 format으로 파스해서 넣음
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		
+		// 2) 사원 저장 (Builder 사용)
+		empRepo.saveAll(List.of(
+		    Emp.builder().empno(7369).ename("SMITH").job("CLERK").mgr(7902)
+		        .hiredate(LocalDate.parse("17-12-1980", fmt)).sal(800.0).comm(null).dept(d20).build(),
+		    Emp.builder().empno(7499).ename("ALLEN").job("SALESMAN").mgr(7698)
+		        .hiredate(LocalDate.parse("20-02-1981", fmt)).sal(1600.0).comm(300.0).dept(d30).build(),
+		    Emp.builder().empno(7521).ename("WARD").job("SALESMAN").mgr(7698)
+		        .hiredate(LocalDate.parse("22-02-1981", fmt)).sal(1250.0).comm(500.0).dept(d30).build(),
+		    Emp.builder().empno(7566).ename("JONES").job("MANAGER").mgr(7839)
+		        .hiredate(LocalDate.parse("02-04-1981", fmt)).sal(2975.0).comm(null).dept(d20).build(),
+		    Emp.builder().empno(7654).ename("MARTIN").job("SALESMAN").mgr(7698)
+		        .hiredate(LocalDate.parse("28-09-1981", fmt)).sal(1250.0).comm(1400.0).dept(d30).build(),
+		    Emp.builder().empno(7698).ename("BLAKE").job("MANAGER").mgr(7839)
+		        .hiredate(LocalDate.parse("01-05-1981", fmt)).sal(2850.0).comm(null).dept(d30).build(),
+		    Emp.builder().empno(7782).ename("CLARK").job("MANAGER").mgr(7839)
+		        .hiredate(LocalDate.parse("09-06-1981", fmt)).sal(2450.0).comm(null).dept(d10).build(),
+		    Emp.builder().empno(7839).ename("KING").job("PRESIDENT").mgr(null)
+		        .hiredate(LocalDate.parse("17-11-1981", fmt)).sal(5000.0).comm(null).dept(d10).build(),
+		    Emp.builder().empno(7844).ename("TURNER").job("SALESMAN").mgr(7698)
+		        .hiredate(LocalDate.parse("08-09-1981", fmt)).sal(1500.0).comm(0.0).dept(d30).build(),
+		    Emp.builder().empno(7900).ename("JAMES").job("CLERK").mgr(7698)
+		        .hiredate(LocalDate.parse("03-12-1981", fmt)).sal(950.0).comm(null).dept(d30).build(),
+		    Emp.builder().empno(7902).ename("FORD").job("ANALYST").mgr(7566)
+		        .hiredate(LocalDate.parse("03-12-1981", fmt)).sal(3000.0).comm(null).dept(d20).build(),
+		    Emp.builder().empno(7934).ename("MILLER").job("CLERK").mgr(7782)
+		        .hiredate(LocalDate.parse("23-01-1982", fmt)).sal(1300.0).comm(null).dept(d10).build()
+		));
+		
+		
+		// EmpRepository 객체 이용해서 select 작업하기
+		List<Emp> empList = empRepo.findAllByOrderByEnameAsc();
+		for(Emp tmp : empList) {
+			System.out.println(tmp.getEname()+"|"+tmp.getDept().getDeptno()+"|"+tmp.getDept().getDname());
 		}
 	}
 	
