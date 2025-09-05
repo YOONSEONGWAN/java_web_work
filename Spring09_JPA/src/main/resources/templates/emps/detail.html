@@ -48,7 +48,8 @@
 	            </ul>
 	        </div>
 	        <div class="card-footer text-end">
-	            <a th:href="@{/emps}" class="btn btn-secondary">목록으로</a>
+	            <a th:href="@{/emps}" class="btn btn-secondary">사원 목록으로</a>
+	            <a th:href="@{|/depts/${emp.deptno}|}" class="btn btn-secondary">부서 자세히보기로</a>
 	        </div>
 	    </div>
 	

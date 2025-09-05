@@ -55,4 +55,23 @@ public class EmployServiceImpl implements EmployService {
 		return DeptDto.toDto(deptRepo.findById(deptno).get());
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public List<EmpDto> getEmpListByDeptno(int deptno) {
+		List<EmpDto> empList1=empRepo.findEmps(deptno).stream().map(EmpDto::toDto).toList();
+		List<EmpDto> empList2=empRepo.findEmps2(deptno).stream().map(EmpDto::toDto).toList();
+		List<EmpDto> empList3=empRepo.findByDept_DeptnoOrderByEnameAsc(deptno).stream().map(EmpDto::toDto).toList();
+		/*
+		 * 	서비스에서는 Repository 메소드를 호출하여 사용	
+		 * 
+		 * 	1. Repository 의 메소드를 호출한다 => entity 리턴
+		 * 	2. stream 으로 바꾼다
+		 * 	3. map 으로 dto 로 바꿔준다.
+		 * 	4. toList 로 List 객체로 바꿔줌
+		 */
+		
+		
+		return empList3;
+	}
+
 }

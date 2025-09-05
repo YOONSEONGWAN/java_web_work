@@ -11,5 +11,5 @@ public interface EmployService {
 	public List<DeptDto> getDeptList();
 	public EmpDeptDto getEmpDetail(int empno);
 	public DeptDto getDeptDetail(int deptno);
-	
+	public List<EmpDto> getEmpListByDeptno(int deptno);
 }

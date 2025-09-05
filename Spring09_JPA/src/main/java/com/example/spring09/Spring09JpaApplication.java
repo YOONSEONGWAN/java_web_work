@@ -46,6 +46,9 @@ public class Spring09JpaApplication {
 	@Autowired
 	DeptRepository deptRepo;
 	
+	
+	/************************************************/
+	
 	@PostConstruct
 	public void bookJPA() {
 		EntityManager em=emf.createEntityManager();
@@ -73,6 +76,7 @@ public class Spring09JpaApplication {
 			System.out.println(tmp.getId() +"| "+ tmp.getName() +" | "+ tmp.getAuthor() +" | "+ tmp.getPublisher() );
 		}
 	}
+	/************************************************/
 	
 	@PostConstruct
 	public void helloJPA() {
@@ -128,6 +132,8 @@ public class Spring09JpaApplication {
 		for(Member tmp : list) {
 			System.out.println(tmp.getNum() +"| "+ tmp.getName() +" | "+ tmp.getAddr());
 		}
+		
+		/************************************************/
 		
 		// 부서 정보를 저장하기 (select 전에 해야함)
 		Dept d10 = new Dept(10, "ACCOUNTING", "NEW YORK");

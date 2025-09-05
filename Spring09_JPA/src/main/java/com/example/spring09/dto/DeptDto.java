@@ -16,6 +16,7 @@ public class DeptDto {
 	private String dname;
 	private String loc;
 	
+	
 	public static DeptDto toDto(Dept d) {
 		return DeptDto.builder()
 				.deptno(d.getDeptno())

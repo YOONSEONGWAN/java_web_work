@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.spring09.dto.DeptDto;
 import com.example.spring09.dto.EmpDeptDto;
+import com.example.spring09.dto.EmpDto;
 import com.example.spring09.service.BookServiceImpl;
 import com.example.spring09.service.EmployService;
 
@@ -53,6 +54,11 @@ public class EmployController {
 		DeptDto dto = employService.getDeptDetail(deptno);
 		// 응답에 필요한 데이터를 "emp" 라는 키값으로 model 에 담기 
 		model.addAttribute("dept", dto);
+		
+		// 해당 부서에 근무하는 사원 정보도 얻어와 model 에 담는다.
+		List<EmpDto> empList=employService.getEmpListByDeptno(deptno);
+		model.addAttribute("empList",empList);
+		
 		return "depts/detail";
 	}
 }

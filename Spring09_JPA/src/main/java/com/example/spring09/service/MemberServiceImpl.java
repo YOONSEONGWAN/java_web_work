@@ -96,14 +96,15 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Transactional
 	@Override
-	public void addMember(MemberDto dto) {
+	public MemberDto addMember(MemberDto dto) {
 		/*
 		 * 	dto 를 entity 로 변경해서 save() 메소드에 전달 (추가, 수정 겸용)
 		 * 
 		 * 	- Entity 의 id 필드에 해당하는 정보가 DB 에 없으면 insert.
 		 * 	- Entity 의 id 필드에 해당하는 정보가 DB 에 있거나 존재하면 update 된다.	
 		 */
-		memberRepo.save(dto.toEntity());
+		Member e = memberRepo.save(dto.toEntity());
+		return MemberDto.toDto(e);
 	}
 	
 	/*
@@ -126,15 +127,16 @@ public class MemberServiceImpl implements MemberService{
 
 	@Transactional
 	@Override
-	public void deleteMember(int num) {
+	public MemberDto deleteMember(int num) {
 		// 만일 삭제할 entity 가 존재하지 않으면
 		if(!memberRepo.existsById(num)) {
 			throw new IllegalArgumentException("삭제할 회원이 존재하지 않습니다. num="+num);
 		}
-		
-		// 번호를 이용해서 삭제(실패시 예외 X)
+		Member m=memberRepo.findById(num).get();
+		//번호를 이용해서 삭제 (실패시 예외가 발생하지는 않는다)
 		memberRepo.deleteById(num);
 		
+		return MemberDto.toDto(m);
 	}
 	
 }
