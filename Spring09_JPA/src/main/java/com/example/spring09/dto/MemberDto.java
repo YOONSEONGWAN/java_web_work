@@ -3,6 +3,8 @@ package com.example.spring09.dto;
 import com.example.spring09.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class MemberDto {
 	private Integer num;
+	
+	@NotBlank(message="이름은 반드시 입력해야 합니다.")
+	@Size(max=20, message="이름은 최대 20자 까지 가능합니다.")
 	private String name;
+	
+	@NotBlank(message="주소는 반드시 입력해야 합니다.")
 	private String addr;
 	
 	// Entity 를 매개변수로 전달하면, dto 를 리턴하는 static 메소드를 만들기

@@ -2,6 +2,8 @@ package com.example.spring09.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,6 +18,14 @@ import com.example.spring09.entity.Member;
  */
 
 public interface MemberRepository extends JpaRepository<Member, Integer>{
+	
+	// name
+	public Page<Member> findByNameContaining(String keyword, Pageable pageable);
+	// addr 검색 메소드
+	public Page<Member> findByAddrContaining(String keyword, Pageable pageable);
+	// name or addr 검색 메소드
+	public Page<Member> findByNameContainingOrAddrContaining(String keyword, String keyword2, Pageable pageable);
+	
 	/*
 	 * 	미리 정해진 형식으로 메소드를 만들면 알아서 정렬된다.
 	 * 
