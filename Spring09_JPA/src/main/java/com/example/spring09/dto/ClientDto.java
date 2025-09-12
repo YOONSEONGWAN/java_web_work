@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.spring09.entity.Client;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
@@ -25,8 +27,13 @@ public class ClientDto {
 	@NotBlank(message="이름은 필수 입니다.")
 	@Size(max=20, message="이름은 최대 20자 까지 가능합니다.")
 	private String userName;
-	
+	/*
+	 * 	RestController 에서 dto 를 리턴하면 해당 dto 의 필드에 있는 내용이 json 문자열로 변경되는데
+	 * 	LocalDateTime 에 있는 날짜 정보를 @JsonFormat 어노테이션을 이용해서 원하는 형식으로 변경하도록 한다.
+	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일 HH:mm")
 	private LocalDateTime createdAt;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일 HH:mm")
 	private LocalDateTime updatedAt;
 	
 	/*
@@ -41,6 +48,7 @@ public class ClientDto {
 	 * 	출력할 때 어떤 형식으로 출력할지를 설정해야 웹브라우저가 해당 날짜를 UI 에 제대로 표시할 수 있다.
 	 * 	그래서 필요한 어노테이션이 @DateTimeFormat 이다.
 	 */
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일")
 	@PastOrPresent(message="미래에 태어날 순 없습니다.")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate birthday;
