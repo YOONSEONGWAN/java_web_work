@@ -2,6 +2,7 @@ package com.example.spring09.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +10,7 @@ import com.example.spring09.entity.Client;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
@@ -50,7 +52,7 @@ public class ClientDto {
 	 */
 	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일")
 	@PastOrPresent(message="미래에 태어날 순 없습니다.")
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)// 표준 날짜 형식 => input type = "date" 에 맞는 형식 
 	private LocalDate birthday;
 	
 	// static toDto method
@@ -74,4 +76,11 @@ public class ClientDto {
 				.birthday(birthday)
 				.build();
 		}
+	
+	// 단순 출력용 생일 문자 형식 - get 메소드를 직접 추가 -> 이런 필드가 있는 것처럼 동작함
+	public String getFormattedBirthday() {
+		// 저장된 생일이 있으면 원하는 형식의 날짜 형식을 리턴하고, 없으면 null 을 리턴
+	   String result = birthday != null ? birthday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")) : null;
+	   return result;
+   }
 }
