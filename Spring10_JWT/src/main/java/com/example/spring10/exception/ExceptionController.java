@@ -1,0 +1,47 @@
+package com.example.spring10.exception;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden // swagger ui 에서 무시하도록 @Hidden
+@RestControllerAdvice
+public class ExceptionController {
+	
+	@ExceptionHandler(PasswordException.class)
+	public ResponseEntity<String> passwordException(PasswordException pe){
+		// 예외 객체로부터 메시지 얻어낸기
+		String msg=pe.getMessage();
+		// 400 번 에러를 발생시키면서 예외 메시지를 응답
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
+	}
+	
+	// @Valid 어노테이션을 이용해서 검증을 하다가 통과하지 못하면 여기 에러가 실행된다.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
+    	// dto 에 필드 검증에 작성한 메시지 정보가 에러 정보에 담겨서 응답 되도록 한다.    	
+        var errors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        DefaultMessageSourceResolvable::getDefaultMessage,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+        Map<String, Object> body = Map.of(
+                "code", "VALIDATION_ERROR",
+                "errors", errors
+        );
+        return ResponseEntity.badRequest().body(body);
+    }
+}
