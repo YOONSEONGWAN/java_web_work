@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +17,11 @@ import io.swagger.v3.oas.annotations.Hidden;
 @Hidden // swagger ui 에서 무시하도록 @Hidden
 @RestControllerAdvice
 public class ExceptionController {
+	
+	@ExceptionHandler(UserNameException.class)
+	public ResponseEntity<String> userNameException(UserNameException une){
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(une.getMessage());
+	}
 	
 	@ExceptionHandler(PasswordException.class)
 	public ResponseEntity<String> passwordException(PasswordException pe){

@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.spring10.dto.PwdChangeRequest;
 import com.example.spring10.dto.UserDto;
 import com.example.spring10.exception.PasswordException;
+import com.example.spring10.exception.UserNameException;
 import com.example.spring10.repository.UserDao;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,11 @@ public class UserServiceImpl implements UserService{
 	// 사용자를 추가하는 메소드 
 	@Override
 	public void createUser(UserDto dto) {
+		// 사용자가 입력한 userName 으로 select 되는지 확인 
+		UserDto result = dao.getByUserName(dto.getUserName());
+		if(result !=null) {
+			throw new UserNameException("이미 사용중인 아이디 입니다");
+		}
 		// 날것의 비밀번호를 암호화해서 (1234->fdh$!@#!)
 		String encodedPwd = encoder.encode(dto.getPassword());
 		// dto 에 다시 담는다
